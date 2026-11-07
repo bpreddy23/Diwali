@@ -2,7 +2,13 @@
 /* ==========================================
    ANUBHAVAM - DIWALI WISHES
    Complete JavaScript
-   Includes Browser Back and Forward Support
+   Features:
+   - Full name OR first-word name matching
+   - Random rocket position in the game
+   - Hidden messages and scoring
+   - Photo gallery and slideshow
+   - Diwali music and fireworks
+   - Browser Back and Forward support
 ========================================== */
 
 
@@ -13,7 +19,6 @@
 const nameForm = document.getElementById("nameForm");
 const nameInput = document.getElementById("nameInput");
 const errorMessage = document.getElementById("errorMessage");
-
 const welcomeScreen = document.getElementById("welcomeScreen");
 const birthdayScreen = document.getElementById("birthdayScreen");
 
@@ -24,13 +29,11 @@ const photoCounter = document.getElementById("photoCounter");
 
 const previousPhotoButton = document.getElementById("previousPhoto");
 const nextPhotoButton = document.getElementById("nextPhoto");
-
 const backButton = document.getElementById("backButton");
 const musicButton = document.getElementById("musicButton");
 
 const petalsContainer = document.getElementById("petals");
 const confettiContainer = document.getElementById("confettiContainer");
-
 const gameCards = document.getElementById("gameCards");
 const gameScore = document.getElementById("gameScore");
 const gameProgress = document.getElementById("gameProgress");
@@ -46,13 +49,15 @@ let currentPhotos = [];
 let currentPhotoIndex = 0;
 
 let slideshowTimer = null;
-
 let musicPlaying = false;
 let audioContext = null;
 let melodyTimer = null;
 
 let discoveredPhotos = new Set();
 let totalScore = 0;
+
+// The game cards will have their own random roles.
+let currentGameCards = [];
 
 const MESSAGE_POINTS = 20;
 const ROCKET_POINTS = 60;
@@ -61,8 +66,6 @@ const ROCKET_POINTS = 60;
 /* ==========================================
    3. INITIALIZE BROWSER HISTORY
 ========================================== */
-
-// The welcome screen is the initial browser-history state.
 
 history.replaceState(
     { screen: "welcome" },
@@ -88,16 +91,51 @@ const hiddenMessages = [
 
 
 /* ==========================================
-   5. NORMALIZE NAMES
+   5. NORMALIZE AND MATCH NAMES
 ========================================== */
 
 function normalizeName(name) {
-
-    return name
+    return String(name || "")
         .trim()
         .toLowerCase()
         .replace(/\s+/g, " ");
+}
 
+function getFirstWord(name) {
+    const normalized = normalizeName(name);
+    return normalized.split(" ")[0] || "";
+}
+
+function findPersonByName(enteredName) {
+    const entered = normalizeName(enteredName);
+
+    if (!entered || !Array.isArray(window.PEOPLE)) {
+        return null;
+    }
+
+    // First preference: exact full-name match.
+    let person = window.PEOPLE.find(function(item) {
+        return normalizeName(item.name) === entered;
+    });
+
+    if (person) return person;
+
+    // Second preference: first-word match.
+    const enteredFirstWord = getFirstWord(entered);
+
+    if (!enteredFirstWord) return null;
+
+    const matches = window.PEOPLE.filter(function(item) {
+        return getFirstWord(item.name) === enteredFirstWord;
+    });
+
+    // Only accept the first-word match if it identifies
+    // exactly one person. This avoids opening the wrong profile.
+    if (matches.length === 1) {
+        return matches[0];
+    }
+
+    return null;
 }
 
 
@@ -106,46 +144,31 @@ function normalizeName(name) {
 ========================================== */
 
 nameForm.addEventListener("submit", function(event) {
-
     event.preventDefault();
 
     const enteredName = normalizeName(nameInput.value);
 
     if (!enteredName) {
-
         errorMessage.textContent = "Please enter your name!";
-
         return;
-
     }
 
     if (!Array.isArray(window.PEOPLE)) {
-
         errorMessage.textContent =
             "Unable to load the wishes list. Please refresh the page.";
-
         return;
-
     }
 
-    const person = window.PEOPLE.find(function(item) {
-
-        return normalizeName(item.name) === enteredName;
-
-    });
+    const person = findPersonByName(enteredName);
 
     if (!person) {
-
         errorMessage.textContent =
             "Name not found. Please check the spelling!";
-
         return;
-
     }
 
     errorMessage.textContent = "";
 
-    // Add celebration screen to browser history.
     history.pushState(
         {
             screen: "celebration",
@@ -156,7 +179,6 @@ nameForm.addEventListener("submit", function(event) {
     );
 
     showBirthday(person);
-
 });
 
 
@@ -165,7 +187,6 @@ nameForm.addEventListener("submit", function(event) {
 ========================================== */
 
 function showBirthday(person) {
-
     stopSlideshow();
     stopMusic();
 
@@ -183,10 +204,8 @@ function showBirthday(person) {
     thumbnailGallery.innerHTML = "";
 
     if (currentPhotos.length === 0) {
-
         mainPhoto.removeAttribute("src");
         mainPhoto.alt = "No photo available";
-
         photoCounter.textContent = "No photos available";
 
         startHiddenPhotoGame([]);
@@ -197,19 +216,14 @@ function showBirthday(person) {
         });
 
         startMusic();
-
         return;
-
     }
 
     displayPhoto(0);
-
     createThumbnails();
-
     startSlideshow();
 
     launchConfetti();
-
     startHiddenPhotoGame(currentPhotos);
 
     startMusic();
@@ -218,7 +232,6 @@ function showBirthday(person) {
         behavior: "smooth",
         block: "start"
     });
-
 }
 
 
@@ -227,24 +240,19 @@ function showBirthday(person) {
 ========================================== */
 
 function showWelcomeScreen() {
-
     stopSlideshow();
-
     stopMusic();
 
     birthdayScreen.classList.add("hidden");
-
     welcomeScreen.classList.remove("hidden");
 
     nameInput.value = "";
-
     errorMessage.textContent = "";
 
     welcomeScreen.scrollIntoView({
         behavior: "smooth",
         block: "start"
     });
-
 }
 
 
@@ -253,7 +261,6 @@ function showWelcomeScreen() {
 ========================================== */
 
 function displayPhoto(index) {
-
     if (!currentPhotos.length) return;
 
     currentPhotoIndex =
@@ -262,13 +269,10 @@ function displayPhoto(index) {
     mainPhoto.classList.add("changing");
 
     const selectedPhoto = currentPhotos[currentPhotoIndex];
-
     const newImage = new Image();
 
     newImage.onload = function() {
-
         mainPhoto.src = newImage.src;
-
         mainPhoto.alt = "Photo of " + personName.textContent;
 
         mainPhoto.classList.remove("changing");
@@ -277,40 +281,29 @@ function displayPhoto(index) {
             (currentPhotoIndex + 1) + " / " + currentPhotos.length;
 
         updateThumbnails();
-
     };
 
     newImage.onerror = function() {
-
         console.error("Unable to load photo:", selectedPhoto);
 
         currentPhotos.splice(currentPhotoIndex, 1);
 
         if (currentPhotos.length === 0) {
-
             mainPhoto.removeAttribute("src");
-
             photoCounter.textContent = "No photos found";
-
             thumbnailGallery.innerHTML = "";
-
             stopSlideshow();
-
             return;
-
         }
 
         currentPhotoIndex =
             currentPhotoIndex % currentPhotos.length;
 
         createThumbnails();
-
         displayPhoto(currentPhotoIndex);
-
     };
 
     newImage.src = selectedPhoto;
-
 }
 
 
@@ -319,39 +312,28 @@ function displayPhoto(index) {
 ========================================== */
 
 function createThumbnails() {
-
     thumbnailGallery.innerHTML = "";
 
     currentPhotos.forEach(function(photo, index) {
-
         const thumbnail = document.createElement("img");
 
         thumbnail.src = photo;
-
         thumbnail.alt = "Photo " + (index + 1);
-
         thumbnail.className = "thumbnail";
 
         thumbnail.addEventListener("click", function() {
-
             displayPhoto(index);
-
             startSlideshow();
-
         });
 
         thumbnail.onerror = function() {
-
             thumbnail.remove();
-
         };
 
         thumbnailGallery.appendChild(thumbnail);
-
     });
 
     updateThumbnails();
-
 }
 
 
@@ -360,19 +342,15 @@ function createThumbnails() {
 ========================================== */
 
 function updateThumbnails() {
-
     const thumbnails =
         thumbnailGallery.querySelectorAll(".thumbnail");
 
     thumbnails.forEach(function(thumbnail, index) {
-
         thumbnail.classList.toggle(
             "active",
             index === currentPhotoIndex
         );
-
     });
-
 }
 
 
@@ -381,24 +359,17 @@ function updateThumbnails() {
 ========================================== */
 
 previousPhotoButton.addEventListener("click", function() {
-
     if (!currentPhotos.length) return;
 
     displayPhoto(currentPhotoIndex - 1);
-
     startSlideshow();
-
 });
 
-
 nextPhotoButton.addEventListener("click", function() {
-
     if (!currentPhotos.length) return;
 
     displayPhoto(currentPhotoIndex + 1);
-
     startSlideshow();
-
 });
 
 
@@ -407,30 +378,20 @@ nextPhotoButton.addEventListener("click", function() {
 ========================================== */
 
 function startSlideshow() {
-
     stopSlideshow();
 
     if (currentPhotos.length < 2) return;
 
     slideshowTimer = setInterval(function() {
-
         displayPhoto(currentPhotoIndex + 1);
-
     }, 4000);
-
 }
 
-
 function stopSlideshow() {
-
     if (slideshowTimer) {
-
         clearInterval(slideshowTimer);
-
         slideshowTimer = null;
-
     }
-
 }
 
 
@@ -439,23 +400,14 @@ function stopSlideshow() {
 ========================================== */
 
 backButton.addEventListener("click", function() {
-
-    // Use browser history when the celebration
-    // screen was opened through name submission.
-
     if (
         history.state &&
         history.state.screen === "celebration"
     ) {
-
         history.back();
-
     } else {
-
         showWelcomeScreen();
-
     }
-
 });
 
 
@@ -464,37 +416,23 @@ backButton.addEventListener("click", function() {
 ========================================== */
 
 window.addEventListener("popstate", function(event) {
-
     if (
         event.state &&
         event.state.screen === "celebration"
     ) {
-
-        const savedPersonName = event.state.personName;
-
         const person = window.PEOPLE.find(function(item) {
-
             return normalizeName(item.name) ===
-                normalizeName(savedPersonName);
-
+                normalizeName(event.state.personName);
         });
 
         if (person) {
-
             showBirthday(person);
-
         } else {
-
             showWelcomeScreen();
-
         }
-
     } else {
-
         showWelcomeScreen();
-
     }
-
 });
 
 
@@ -503,13 +441,11 @@ window.addEventListener("popstate", function(event) {
 ========================================== */
 
 function createPetals() {
-
     if (!petalsContainer) return;
 
     const flowers = ["🌸", "🌼", "🌺", "✨"];
 
     for (let i = 0; i < 20; i++) {
-
         const petal = document.createElement("span");
 
         petal.className = "petal";
@@ -529,9 +465,7 @@ function createPetals() {
             (12 + Math.random() * 13) + "px";
 
         petalsContainer.appendChild(petal);
-
     }
-
 }
 
 createPetals();
@@ -542,7 +476,6 @@ createPetals();
 ========================================== */
 
 function launchConfetti() {
-
     if (!confettiContainer) return;
 
     confettiContainer.innerHTML = "";
@@ -558,7 +491,6 @@ function launchConfetti() {
     ];
 
     for (let i = 0; i < pieces; i++) {
-
         const piece = document.createElement("span");
 
         piece.className = "confetti";
@@ -580,274 +512,249 @@ function launchConfetti() {
         confettiContainer.appendChild(piece);
 
         setTimeout(function() {
-
             piece.remove();
-
         }, 8000);
-
     }
-
 }
 
 
 /* ==========================================
-   18. START HIDDEN PHOTO GAME
+   18. RANDOMIZE GAME CARD POSITIONS
+========================================== */
+
+function shuffleArray(array) {
+    const shuffled = array.slice();
+
+    // Fisher-Yates shuffle.
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [shuffled[i], shuffled[j]] =
+            [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+}
+
+
+/* ==========================================
+   19. START HIDDEN PHOTO GAME
 ========================================== */
 
 function startHiddenPhotoGame(photos) {
-
     if (!gameCards) return;
 
     gameCards.innerHTML = "";
 
     discoveredPhotos = new Set();
-
     totalScore = 0;
 
     if (gameFeedback) {
-
         gameFeedback.textContent =
             "Tap a photo to uncover its secret!";
-
     }
 
     const result = document.querySelector(".game-result");
 
     if (result) {
-
         result.remove();
-
     }
 
     updateGameScore();
 
     if (!Array.isArray(photos) || photos.length < 3) {
-
         gameCards.innerHTML =
             "<p>Please add at least three working photos to play the Diwali surprise game.</p>";
 
         if (gameFeedback) {
-
             gameFeedback.textContent =
                 "The surprise game needs three photos.";
-
         }
 
         return;
-
     }
 
+    // Use the same three photos from the main gallery.
     const gamePhotos = photos.slice(0, 3);
 
-    gamePhotos.forEach(function(photo, index) {
+    // Assign a role to each photo.
+    const gameItems = [
+        {
+            photo: gamePhotos[0],
+            role: "message",
+            messageIndex: 0
+        },
+        {
+            photo: gamePhotos[1],
+            role: "message",
+            messageIndex: 1
+        },
+        {
+            photo: gamePhotos[2],
+            role: "rocket"
+        }
+    ];
 
+    // Shuffle the cards so the rocket is not always last.
+    currentGameCards = shuffleArray(gameItems);
+
+    currentGameCards.forEach(function(item, index) {
         const card = document.createElement("button");
 
         card.type = "button";
-
         card.className = "game-card";
 
         const image = document.createElement("img");
 
-        image.src = photo;
-
+        image.src = item.photo;
         image.alt = "Hidden Diwali surprise " + (index + 1);
 
         const label = document.createElement("span");
 
         label.className = "game-card-label";
-
         label.textContent = "Tap to reveal ✨";
 
         const status = document.createElement("span");
 
         status.className = "game-card-status";
-
         status.textContent = "Hidden surprise";
 
         card.appendChild(image);
-
         card.appendChild(label);
-
         card.appendChild(status);
 
         card.addEventListener("click", function() {
-
             revealGameCard(index, card, label, status);
-
         });
 
         image.onerror = function() {
-
             card.disabled = true;
-
             label.textContent = "Photo unavailable";
-
             status.textContent = "Check image path";
-
         };
 
         gameCards.appendChild(card);
-
     });
-
 }
 
 
 /* ==========================================
-   19. REVEAL HIDDEN PHOTO
+   20. REVEAL HIDDEN PHOTO
 ========================================== */
 
 function revealGameCard(index, card, label, status) {
-
     if (discoveredPhotos.has(index)) return;
 
     discoveredPhotos.add(index);
 
     card.classList.add("revealed");
-
     card.disabled = true;
 
-    if (index === 0) {
+    // Get the actual role of this shuffled card.
+    const selectedItem = currentGameCards[index];
 
-        label.textContent = hiddenMessages[0].title;
+    if (selectedItem.role === "message") {
+        const message = hiddenMessages[selectedItem.messageIndex];
 
+        label.textContent = message.title;
         status.textContent = "+20 points";
 
         totalScore += MESSAGE_POINTS;
 
         if (gameFeedback) {
-
-            gameFeedback.textContent =
-                hiddenMessages[0].message;
-
+            gameFeedback.textContent = message.message;
         }
-
     }
 
-    else if (index === 1) {
-
-        label.textContent = hiddenMessages[1].title;
-
-        status.textContent = "+20 points";
-
-        totalScore += MESSAGE_POINTS;
-
-        if (gameFeedback) {
-
-            gameFeedback.textContent =
-                hiddenMessages[1].message;
-
-        }
-
-    }
-
-    else if (index === 2) {
-
+    else if (selectedItem.role === "rocket") {
         label.textContent = "🚀 THE ROCKET SURPRISE!";
 
+        // Rocket launches fireworks whenever clicked.
         launchRocketFireworks();
 
-        if (discoveredPhotos.size === 3) {
+        // Full rocket points only when it is clicked last.
+        const bothMessagesFound = currentGameCards
+            .filter(function(item) {
+                return item.role === "message";
+            })
+            .every(function(item) {
+                const cardIndex = currentGameCards.indexOf(item);
+                return discoveredPhotos.has(cardIndex);
+            });
 
+        if (bothMessagesFound) {
             totalScore += ROCKET_POINTS;
 
             status.textContent =
                 "+60 points — Perfect order!";
 
             if (gameFeedback) {
-
                 gameFeedback.textContent =
                     "Amazing! You saved the rocket for last. What a spectacular Diwali blast!";
-
             }
-
         } else {
-
             status.textContent =
                 "Rocket launched! No bonus points.";
 
             if (gameFeedback) {
-
                 gameFeedback.textContent =
-                    "BOOM! The rocket blasted! But you clicked it before discovering the other surprises. You can still collect the remaining points!";
-
+                    "BOOM! The rocket blasted! But you clicked it before discovering both hidden messages. You can still collect the remaining points!";
             }
-
         }
-
     }
 
     updateGameScore();
 
     if (discoveredPhotos.size === 3) {
-
         setTimeout(function() {
-
             showGameResult();
-
         }, 1800);
-
     }
-
 }
 
 
 /* ==========================================
-   20. UPDATE GAME SCORE
+   21. UPDATE GAME SCORE
 ========================================== */
 
 function updateGameScore() {
-
     if (gameScore) {
-
         gameScore.textContent = totalScore + " / 100";
-
     }
 
     if (gameProgress) {
-
         gameProgress.textContent =
             discoveredPhotos.size + " / 3";
-
     }
-
 }
 
 
 /* ==========================================
-   21. ROCKET LAUNCH AND FIREWORKS
+   22. ROCKET LAUNCH AND FIREWORKS
 ========================================== */
 
 function launchRocketFireworks() {
-
     if (!gameFireworks) return;
 
     const rocket = document.createElement("div");
 
     rocket.className = "rocket-flight";
-
     rocket.textContent = "🚀";
 
     gameFireworks.appendChild(rocket);
 
     setTimeout(function() {
-
         rocket.remove();
-
         createFireworkBurst();
-
     }, 1300);
-
 }
 
 
 /* ==========================================
-   22. CREATE FIREWORK BURST
+   23. CREATE FIREWORK BURST
 ========================================== */
 
 function createFireworkBurst() {
-
     if (!gameFireworks) return;
 
     const burst = document.createElement("div");
@@ -864,7 +771,6 @@ function createFireworkBurst() {
     ];
 
     for (let i = 0; i < 42; i++) {
-
         const spark = document.createElement("span");
 
         spark.className = "firework-spark";
@@ -874,46 +780,36 @@ function createFireworkBurst() {
         const distance = 60 + Math.random() * 120;
 
         const x = Math.cos(angle) * distance;
-
         const y = Math.sin(angle) * distance;
 
         spark.style.setProperty("--x", x + "px");
-
         spark.style.setProperty("--y", y + "px");
 
         spark.style.backgroundColor =
             colors[Math.floor(Math.random() * colors.length)];
 
         burst.appendChild(spark);
-
     }
 
     gameFireworks.appendChild(burst);
 
     setTimeout(function() {
-
         burst.remove();
-
     }, 1800);
-
 }
 
 
 /* ==========================================
-   23. FINAL GAME RESULT
+   24. FINAL GAME RESULT
 ========================================== */
 
 function showGameResult() {
-
     if (!gameCards) return;
 
-    const oldResult =
-        document.querySelector(".game-result");
+    const oldResult = document.querySelector(".game-result");
 
     if (oldResult) {
-
         oldResult.remove();
-
     }
 
     const result = document.createElement("div");
@@ -921,49 +817,39 @@ function showGameResult() {
     result.className = "game-result";
 
     const heading = document.createElement("h2");
-
     const message = document.createElement("p");
-
     const score = document.createElement("strong");
 
     if (totalScore === 100) {
-
         heading.textContent = "🏆 Diwali Champion!";
 
         message.textContent =
             "Perfect! You discovered both hidden messages and saved the rocket for the grand finale!";
-
     } else {
-
         heading.textContent = "✨ Great Diwali Explorer!";
 
         message.textContent =
             "You discovered all three surprises! Next time, save the rocket for the very last to earn the perfect score!";
-
     }
 
     score.textContent =
         "Your Final Score: " + totalScore + " / 100";
 
     result.appendChild(heading);
-
     result.appendChild(message);
-
     result.appendChild(score);
 
     gameCards.parentNode.appendChild(result);
-
 }
 
 
 /* ==========================================
-   24. DIWALI-INSPIRED MUSIC
+   25. DIWALI-INSPIRED MUSIC
 ========================================== */
 
 // Original browser-generated melody.
 
 function playMelody() {
-
     if (!audioContext || audioContext.state === "closed") {
         return;
     }
@@ -977,15 +863,12 @@ function playMelody() {
     let noteIndex = 0;
 
     melodyTimer = setInterval(function() {
-
         if (!musicPlaying) return;
 
         const oscillator = audioContext.createOscillator();
-
         const gain = audioContext.createGain();
 
         oscillator.type = "sine";
-
         oscillator.frequency.value = notes[noteIndex];
 
         gain.gain.setValueAtTime(
@@ -1004,43 +887,32 @@ function playMelody() {
         );
 
         oscillator.connect(gain);
-
         gain.connect(audioContext.destination);
 
         oscillator.start();
-
         oscillator.stop(audioContext.currentTime + 0.75);
 
         noteIndex = (noteIndex + 1) % notes.length;
-
     }, 450);
-
 }
 
 
 /* ==========================================
-   25. START MUSIC
+   26. START MUSIC
 ========================================== */
 
 async function startMusic() {
-
     try {
-
         const AudioContextClass =
             window.AudioContext || window.webkitAudioContext;
 
         if (!AudioContextClass) {
-
             musicButton.textContent = "♫ Music unavailable";
-
             return;
-
         }
 
         if (!audioContext || audioContext.state === "closed") {
-
             audioContext = new AudioContextClass();
-
         }
 
         await audioContext.resume();
@@ -1051,79 +923,57 @@ async function startMusic() {
             "♫ Music: ON — Turn OFF";
 
         if (melodyTimer) {
-
             clearInterval(melodyTimer);
-
             melodyTimer = null;
-
         }
 
         playMelody();
-
     }
 
     catch (error) {
-
         musicPlaying = false;
 
         musicButton.textContent =
             "♫ Tap to enable music";
 
         console.error("Music could not start:", error);
-
     }
-
 }
 
 
 /* ==========================================
-   26. STOP MUSIC
+   27. STOP MUSIC
 ========================================== */
 
 function stopMusic() {
-
     musicPlaying = false;
 
     if (melodyTimer) {
-
         clearInterval(melodyTimer);
-
         melodyTimer = null;
-
     }
 
     if (audioContext && audioContext.state !== "closed") {
-
         audioContext.suspend();
-
     }
 
     if (musicButton) {
-
         musicButton.textContent =
             "♫ Music: OFF — Turn ON";
-
     }
-
 }
 
 
 /* ==========================================
-   27. MUSIC ON / OFF BUTTON
+   28. MUSIC ON / OFF BUTTON
 ========================================== */
 
 musicButton.addEventListener("click", function() {
-
     if (musicPlaying) {
-
         stopMusic();
-
     } else {
-
         startMusic();
-
     }
-
 });
 
 
