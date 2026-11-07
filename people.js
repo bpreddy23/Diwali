@@ -1,103 +1,163 @@
-const PEOPLE = [
 
+window.PEOPLE = [
     {
         name: "Person 1",
-        photo: "images/person1.jpg"
+        photos: [
+            "images/person1.jpg",
+            "images/person1-2.jpg",
+            "images/person1-3.jpg"
+        ]
     },
-
     {
         name: "Person 2",
-        photo: "images/person2.jpg"
+        photos: [
+            "images/person2.jpg",
+            "images/person2-2.jpg",
+            "images/person2-3.jpg"
+        ]
     },
-
     {
         name: "Person 3",
-        photo: "images/person3.jpg"
+        photos: [
+            "images/person3.jpg",
+            "images/person3-2.jpg",
+            "images/person3-3.jpg"
+        ]
     },
-
     {
         name: "Person 4",
-        photo: "images/person4.jpg"
+        photos: [
+            "images/person4.jpg",
+            "images/person4-2.jpg",
+            "images/person4-3.jpg"
+        ]
     },
-
     {
         name: "Person 5",
-        photo: "images/person5.jpg"
+        photos: [
+            "images/person5.jpg",
+            "images/person5-2.jpg",
+            "images/person5-3.jpg"
+        ]
     },
-
     {
         name: "Person 6",
-        photo: "images/person6.jpg"
+        photos: [
+            "images/person6.jpg",
+            "images/person6-2.jpg",
+            "images/person6-3.jpg"
+        ]
     },
-
     {
         name: "Person 7",
-        photo: "images/person7.jpg"
+        photos: [
+            "images/person7.jpg",
+            "images/person7-2.jpg",
+            "images/person7-3.jpg"
+        ]
     },
-
     {
         name: "Person 8",
-        photo: "images/person8.jpg"
+        photos: [
+            "images/person8.jpg",
+            "images/person8-2.jpg",
+            "images/person8-3.jpg"
+        ]
     },
-
     {
         name: "Person 9",
-        photo: "images/person9.jpg"
+        photos: [
+            "images/person9.jpg",
+            "images/person9-2.jpg",
+            "images/person9-3.jpg"
+        ]
     },
-
     {
         name: "Person 10",
-        photo: "images/person10.jpg"
+        photos: [
+            "images/person10.jpg",
+            "images/person10-2.jpg",
+            "images/person10-3.jpg"
+        ]
     },
-
     {
         name: "Person 11",
-        photo: "images/person11.jpg"
+        photos: [
+            "images/person11.jpg",
+            "images/person11-2.jpg",
+            "images/person11-3.jpg"
+        ]
     },
-
     {
         name: "Person 12",
-        photo: "images/person12.jpg"
+        photos: [
+            "images/person12.jpg",
+            "images/person12-2.jpg",
+            "images/person12-3.jpg"
+        ]
     },
-
     {
         name: "Person 13",
-        photo: "images/person13.jpg"
+        photos: [
+            "images/person13.jpg",
+            "images/person13-2.jpg",
+            "images/person13-3.jpg"
+        ]
     },
-
     {
         name: "Person 14",
-        photo: "images/person14.jpg"
+        photos: [
+            "images/person14.jpg",
+            "images/person14-2.jpg",
+            "images/person14-3.jpg"
+        ]
     },
-
     {
         name: "Person 15",
-        photo: "images/person15.jpg"
+        photos: [
+            "images/person15.jpg",
+            "images/person15-2.jpg",
+            "images/person15-3.jpg"
+        ]
     },
-
     {
         name: "Person 16",
-        photo: "images/person16.jpg"
+        photos: [
+            "images/person16.jpg",
+            "images/person16-2.jpg",
+            "images/person16-3.jpg"
+        ]
     },
-
     {
         name: "Person 17",
-        photo: "images/person17.jpg"
+        photos: [
+            "images/person17.jpg",
+            "images/person17-2.jpg",
+            "images/person17-3.jpg"
+        ]
     },
-
     {
         name: "Person 18",
-        photo: "images/person18.jpg"
+        photos: [
+            "images/person18.jpg",
+            "images/person18-2.jpg",
+            "images/person18-3.jpg"
+        ]
     },
-
     {
         name: "Person 19",
-        photo: "images/person19.jpg"
+        photos: [
+            "images/person19.jpg",
+            "images/person19-2.jpg",
+            "images/person19-3.jpg"
+        ]
     },
-
     {
         name: "Person 20",
-        photo: "images/person20.jpg"
+        photos: [
+            "images/person20.jpg",
+            "images/person20-2.jpg",
+            "images/person20-3.jpg"
+        ]
     }
-
 ];
