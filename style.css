@@ -1,10 +1,5 @@
-:root {
-    --burgundy: #3b071d;
-    --dark: #210311;
-    --gold: #e8c77d;
-    --bright-gold: #ffe7a6;
-    --cream: #fff5df;
-}
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 * {
     margin: 0;
@@ -14,524 +9,514 @@
 
 body {
     min-height: 100vh;
-    color: var(--cream);
-    font-family: 'Poppins', sans-serif;
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            #681932,
-            #3b071d 55%,
-            #210311
-        );
-
     overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+    color: #fff5dc;
+    background:
+        radial-gradient(ellipse at top, #75152e 0%, transparent 55%),
+        linear-gradient(135deg, #24000c, #4b071e 55%, #190008);
+    position: relative;
 }
-
-/* BACKGROUND */
 
 .background-glow {
     position: fixed;
-    width: 350px;
-    height: 350px;
-    background: #d69b42;
-    filter: blur(130px);
-    opacity: 0.17;
-    top: 20%;
-    left: 35%;
-    pointer-events: none;
-}
-
-body::before {
-    content: "";
-    position: fixed;
     inset: 0;
     pointer-events: none;
-    opacity: 0.15;
-
-    background-image:
-        radial-gradient(
-            #ffe7a6 1px,
-            transparent 1px
-        );
-
-    background-size: 30px 30px;
+    background:
+        radial-gradient(circle at 15% 25%, #e8a32a22, transparent 25%),
+        radial-gradient(circle at 85% 70%, #ffcf5b1c, transparent 30%);
+    animation: glowPulse 5s ease-in-out infinite alternate;
+    z-index: 0;
 }
 
-/* HEADER */
+@keyframes glowPulse {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+}
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 25px 6%;
-    position: relative;
+/* Decorations */
+
+.decorations span {
+    position: fixed;
+    z-index: 1;
+    font-size: 30px;
+    pointer-events: none;
+    animation: floatDiya 6s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px #ffca55);
+}
+
+.decorations span:nth-child(1) { top: 10%; left: 5%; }
+.decorations span:nth-child(2) { top: 20%; right: 8%; animation-delay: 1s; }
+.decorations span:nth-child(3) { bottom: 12%; left: 8%; animation-delay: 2s; }
+.decorations span:nth-child(4) { top: 50%; right: 4%; animation-delay: 3s; }
+.decorations span:nth-child(5) { bottom: 25%; right: 12%; animation-delay: 1.5s; }
+.decorations span:nth-child(6) { top: 65%; left: 3%; animation-delay: 2.5s; }
+.decorations span:nth-child(7) { top: 8%; right: 30%; animation-delay: 3.5s; }
+.decorations span:nth-child(8) { bottom: 8%; right: 35%; animation-delay: 4s; }
+
+@keyframes floatDiya {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-22px) rotate(5deg); }
+}
+
+/* Falling petals */
+
+#petals {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
     z-index: 2;
 }
 
-.logo {
-    color: var(--bright-gold);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 25px;
-    letter-spacing: 2px;
+.petal {
+    position: absolute;
+    top: -30px;
+    font-size: 18px;
+    animation: fallPetal linear infinite;
+    opacity: 0.8;
 }
 
-.logo small {
-    display: block;
-    font-family: 'Poppins', sans-serif;
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: #d8b98a;
+@keyframes fallPetal {
+    0% {
+        transform: translateY(-30px) rotate(0deg);
+        opacity: 0;
+    }
+    15% { opacity: 0.9; }
+    100% {
+        transform: translateY(110vh) rotate(600deg);
+        opacity: 0;
+    }
 }
 
-button {
-    cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-}
+/* Welcome screen */
 
-#musicButton {
-    background: transparent;
-    color: var(--bright-gold);
-    border: 1px solid #d9b66c88;
-    padding: 11px 17px;
-    border-radius: 30px;
-}
-
-/* MAIN */
-
-main {
-    min-height: 78vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 35px 20px;
+.welcome-screen,
+.birthday-screen {
     position: relative;
-    z-index: 1;
-}
-
-#welcomeScreen {
+    z-index: 3;
+    min-height: 100vh;
     width: 100%;
-    max-width: 750px;
-    text-align: center;
-    animation: fadeUp 1s ease;
-}
-
-.eyebrow {
-    color: var(--gold);
-    font-size: 10px;
-    letter-spacing: 4px;
-    margin-bottom: 28px;
-}
-
-h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(42px, 7vw, 76px);
-    line-height: 1;
-    font-weight: 500;
-    color: #fff3d8;
-}
-
-h1 em {
-    color: var(--bright-gold);
-}
-
-.description {
-    max-width: 470px;
-    margin: 25px auto;
-    color: #e6cfc3;
-    font-size: 12px;
-    line-height: 2;
-}
-
-/* NAME INPUT */
-
-form {
-    max-width: 470px;
-    margin: 40px auto;
-    text-align: left;
-}
-
-form label {
-    display: block;
-    color: var(--bright-gold);
-    font-size: 11px;
-    margin-bottom: 12px;
-}
-
-.input-container {
     display: flex;
-    padding: 5px;
-    border: 1px solid #d9b66c88;
-    background: #20030f;
-    border-radius: 5px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 35px 18px;
 }
 
-.input-container input {
-    flex: 1;
-    min-width: 0;
-    padding: 14px;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: white;
-    font-family: 'Poppins', sans-serif;
+.welcome-card {
+    width: min(520px, 100%);
+    text-align: center;
+    padding: 45px 30px;
+    border: 1px solid #e8bd6b;
+    border-radius: 25px;
+    background: linear-gradient(145deg, #64152aee, #310714f2);
+    box-shadow:
+        0 0 35px #e7a73530,
+        inset 0 0 25px #f5bd5220;
+    animation: cardAppear 1s ease both;
 }
 
-.input-container input::placeholder {
-    color: #b99da5;
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translateY(35px) scale(0.94);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
-.input-container button {
-    border: none;
-    padding: 12px 18px;
-    color: #3b071d;
-    background: linear-gradient(
-        135deg,
-        #f2d895,
-        #c99a4b
-    );
-    border-radius: 3px;
+.top-diya {
+    font-size: 55px;
+    margin-bottom: 12px;
+    animation: diyaGlow 2s infinite alternate;
+}
+
+@keyframes diyaGlow {
+    from { filter: drop-shadow(0 0 5px #ffbd48); }
+    to { filter: drop-shadow(0 0 25px #ffcf58); }
+}
+
+.small-heading {
+    color: #f7ce7b;
+    letter-spacing: 4px;
+    font-size: 11px;
     font-weight: 600;
 }
 
-form small {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    color: #c4a8aa;
-    font-size: 9px;
+.welcome-card h1,
+.birthday-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: #ffdb8b;
+    font-weight: 700;
 }
 
-#errorMessage {
-    color: #ffd0b9;
+.welcome-card h1 {
+    font-size: clamp(35px, 7vw, 52px);
+    line-height: 1.1;
+    margin: 18px 0;
+}
+
+.gold-line {
+    width: 90px;
+    height: 2px;
+    margin: 20px auto;
+    background: linear-gradient(90deg, transparent, #f6ca70, transparent);
+}
+
+.welcome-text {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #f8e8d2;
+    margin-bottom: 25px;
+}
+
+#nameForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#nameInput {
+    width: 100%;
+    padding: 15px 18px;
+    border-radius: 30px;
+    border: 1px solid #e6bd6b;
+    outline: none;
+    background: #290813;
+    color: white;
     text-align: center;
+    font-size: 15px;
+}
+
+#nameInput::placeholder {
+    color: #d7b9a4;
+}
+
+#nameInput:focus {
+    box-shadow: 0 0 15px #f6c96a66;
+}
+
+.reveal-button,
+.music-control button {
+    border: none;
+    border-radius: 30px;
+    padding: 14px 22px;
+    background: linear-gradient(135deg, #f7d58a, #c78a30);
+    color: #3d0715;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.reveal-button:hover,
+.music-control button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px #e8b94b55;
+}
+
+.error-message {
+    color: #ffb0b0;
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+.footer-note {
+    color: #d9bda6;
     font-size: 11px;
-    margin-top: 10px;
-    min-height: 15px;
+    margin-top: 30px;
 }
 
-.diyas {
-    font-size: 30px;
-    margin-top: 40px;
-    filter: drop-shadow(0 0 12px #e8c77d);
+/* Birthday page */
+
+.birthday-screen {
+    justify-content: flex-start;
+    padding-top: 55px;
+    animation: pageReveal 1s ease both;
 }
 
-/* HIDE ELEMENTS */
+@keyframes pageReveal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
 
 .hidden {
     display: none !important;
 }
 
-/* BIRTHDAY SCREEN */
-
-#birthdayScreen {
-    width: 100%;
-    max-width: 850px;
+.celebration-header {
     text-align: center;
-    animation: fadeUp 1s ease;
-    padding: 15px 10px;
+    max-width: 700px;
+    animation: slideDown 1s ease both;
 }
 
-.back-button {
-    display: block;
-    margin: 0 auto 20px;
-    color: #d9b98c;
-    background: transparent;
-    border: none;
-    font-size: 11px;
-}
-
-/* PHOTO FRAME */
-
-.photo-container {
-    width: 100%;
-    height: 300px;
-    position: relative;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin: 10px auto;
-}
-
-.photo-container::before {
-    content: "";
-    position: absolute;
-    width: 230px;
-    height: 230px;
-    border-radius: 50%;
-    background: #e7bb6240;
-    filter: blur(45px);
-}
-
-.photo-frame {
-    width: 190px;
-    height: 225px;
-    padding: 9px;
-
-    border: 3px solid var(--gold);
-
-    background: linear-gradient(
-        145deg,
-        #fff0bb,
-        #b98537,
-        #f6d78d
-    );
-
-    box-shadow:
-        0 0 0 5px #4b1328,
-        0 0 0 7px #d4ad63,
-        0 20px 55px #100008;
-
-    opacity: 0;
-    transform: scale(0.5) rotate(-10deg);
-    z-index: 2;
-}
-
-.photo-frame.reveal {
-    animation: magicalReveal 1.3s ease forwards;
-}
-
-.photo-frame img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none;
-    border: 3px solid #4c1730;
-}
-
-.photo-frame img.loaded {
-    display: block;
-}
-
-#photoFallback {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    background: #51142c;
-    border: 3px solid #4c1730;
-    color: var(--bright-gold);
-}
-
-#photoFallback span {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 60px;
-}
-
-#photoFallback small {
-    font-size: 8px;
-    letter-spacing: 3px;
-}
-
-.photo-frame.has-photo #photoFallback {
-    display: none;
-}
-
-/* STARS */
-
-.star {
-    position: absolute;
-    color: var(--bright-gold);
-    font-size: 25px;
-    text-shadow: 0 0 15px gold;
-    animation: floating 3s infinite ease-in-out;
-}
-
-.star1 {
-    left: calc(50% - 160px);
-    top: 45px;
-}
-
-.star2 {
-    right: calc(50% - 170px);
-    top: 80px;
-    animation-delay: .5s;
-}
-
-.star3 {
-    left: calc(50% - 145px);
-    bottom: 35px;
-    animation-delay: 1s;
-}
-
-.star4 {
-    right: calc(50% - 150px);
-    bottom: 50px;
-    animation-delay: 1.5s;
-}
-
-/* WISHES */
-
-.birthday-message {
-    animation: fadeUp 1s .4s both;
-}
-
-.birthday-label {
-    color: var(--gold);
-    font-size: 11px;
-    letter-spacing: 5px;
-}
-
-.birthday-message h2 {
-    color: var(--bright-gold);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(45px, 7vw, 68px);
-    margin: 10px 0;
-}
-
-.divider {
-    color: var(--gold);
-    font-size: 20px;
-    margin: 12px;
-}
-
-.wish {
-    color: #f0dcd2;
-    font-size: 12px;
-    line-height: 2;
-    max-width: 550px;
-    margin: auto;
-}
-
-.blessing {
-    color: var(--bright-gold);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 19px;
-    font-style: italic;
-    margin-top: 20px;
-}
-
-.signature {
-    margin-top: 15px;
-    color: #c9a9a7;
-    font-size: 10px;
-    letter-spacing: 2px;
-}
-
-.again-button {
-    margin-top: 25px;
-    padding: 12px 22px;
-    color: var(--bright-gold);
-    border: 1px solid #d9b66c88;
-    background: transparent;
-    border-radius: 30px;
-}
-
-/* CONFETTI */
-
-#confetti {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-    z-index: 5;
-}
-
-.confetti-piece {
-    position: absolute;
-    top: -20px;
-    width: 7px;
-    height: 12px;
-    background: var(--gold);
-    animation: fall 5s linear forwards;
-}
-
-/* FOOTER */
-
-footer {
-    text-align: center;
-    padding: 20px;
-    color: #a9858d;
-    font-size: 9px;
-    letter-spacing: 1px;
-}
-
-/* ANIMATIONS */
-
-@keyframes fadeUp {
+@keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(-30px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-@keyframes magicalReveal {
-    0% {
+.birthday-title {
+    font-size: clamp(46px, 9vw, 78px);
+    margin-top: 12px;
+    text-shadow: 0 0 18px #ffc65a88;
+    animation: titleGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+    from { text-shadow: 0 0 8px #ffcd69; }
+    to { text-shadow: 0 0 28px #ffcd69, 0 0 50px #d88b31; }
+}
+
+.person-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(30px, 6vw, 44px);
+    color: #fff1c8;
+    margin: 5px 0 15px;
+}
+
+.birthday-message {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #f5ddc5;
+    padding: 0 10px;
+}
+
+/* Main photo */
+
+.photo-section {
+    margin-top: 35px;
+    text-align: center;
+    width: 100%;
+    max-width: 650px;
+}
+
+.photo-frame {
+    width: min(340px, 82vw);
+    height: 390px;
+    margin: 0 auto;
+    position: relative;
+    padding: 10px;
+    border: 3px solid #edc16b;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #ffe6a7, #8e5719, #ffe6a7);
+    box-shadow:
+        0 0 20px #ffca5a88,
+        0 0 60px #e9a53544,
+        inset 0 0 12px #fff1c6;
+    animation: photoReveal 1.3s ease both, frameGlow 3s infinite alternate;
+}
+
+@keyframes photoReveal {
+    from {
         opacity: 0;
-        transform: scale(.5) rotate(-10deg);
-        filter: blur(10px);
+        transform: scale(0.65) rotate(-5deg);
     }
-
-    70% {
-        opacity: 1;
-        transform: scale(1.08) rotate(3deg);
-        filter: blur(0);
-    }
-
-    100% {
+    to {
         opacity: 1;
         transform: scale(1) rotate(0);
     }
 }
 
-@keyframes floating {
-    50% {
-        transform: translateY(-13px) rotate(15deg);
-    }
+@keyframes frameGlow {
+    from { box-shadow: 0 0 15px #ffca5a66, 0 0 30px #e9a53533; }
+    to { box-shadow: 0 0 30px #ffca5acc, 0 0 65px #e9a53577; }
 }
 
-@keyframes fall {
+.photo-frame img {
+    width: 100%;
+    height: calc(100% - 35px);
+    display: block;
+    object-fit: cover;
+    border-radius: 12px;
+    transition: opacity 0.35s, transform 0.5s;
+}
+
+.photo-frame img.changing {
+    opacity: 0;
+    transform: scale(1.04);
+}
+
+.photo-caption {
+    height: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5a270b;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+}
+
+.photo-instruction {
+    margin: 20px 0 12px;
+    color: #f5d28b;
+    font-size: 13px;
+}
+
+/* Photo controls */
+
+.photo-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    margin: 12px 0;
+    color: #ffe1a0;
+    font-size: 13px;
+}
+
+.photo-controls button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #e7bd69;
+    border-radius: 50%;
+    background: #5a1028;
+    color: #ffdf96;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.photo-controls button:hover {
+    background: #d49a3b;
+    color: #3b0814;
+    transform: scale(1.12);
+}
+
+.thumbnail-gallery {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 20px auto;
+}
+
+.thumbnail {
+    width: 68px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 9px;
+    border: 2px solid #9b6834;
+    opacity: 0.65;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.thumbnail:hover,
+.thumbnail.active {
+    opacity: 1;
+    border-color: #ffdc8c;
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px #ffc95c77;
+}
+
+/* Birthday message card */
+
+.birthday-wish {
+    text-align: center;
+    width: min(500px, 92%);
+    margin: 25px auto;
+    padding: 25px;
+    border: 1px solid #b77c3a;
+    border-radius: 18px;
+    background: #64152a77;
+    box-shadow: 0 0 25px #e4ae4430;
+    animation: cardAppear 1s ease both;
+}
+
+.birthday-wish h2 {
+    font-family: 'Cormorant Garamond', serif;
+    color: #ffdb8b;
+    font-size: 32px;
+    margin: 8px 0;
+}
+
+.birthday-wish p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #f7e4cf;
+}
+
+.wish-decoration {
+    color: #f5c65f;
+    letter-spacing: 8px;
+}
+
+/* Music and back buttons */
+
+.music-control {
+    margin: 10px 0 20px;
+}
+
+.back-button {
+    border: 1px solid #e3b963;
+    border-radius: 30px;
+    background: transparent;
+    color: #ffe2a0;
+    padding: 11px 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.back-button:hover {
+    background: #e1b75e;
+    color: #390817;
+}
+
+/* Confetti */
+
+#confettiContainer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.confetti {
+    position: absolute;
+    top: -15px;
+    width: 9px;
+    height: 14px;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
     to {
-        transform: translateY(110vh) rotate(720deg);
+        transform: translateY(110vh) rotate(900deg);
         opacity: 0;
     }
 }
 
-/* MOBILE RESPONSIVENESS */
+/* Mobile */
 
 @media (max-width: 600px) {
-
-    header {
-        padding: 18px 15px;
+    .welcome-card {
+        padding: 35px 22px;
     }
 
-    .logo {
-        font-size: 20px;
-    }
-
-    #musicButton {
-        padding: 9px 10px;
-        font-size: 9px;
-    }
-
-    main {
-        padding: 25px 15px;
-    }
-
-    .photo-container {
-        height: 270px;
+    .birthday-screen {
+        padding-top: 45px;
     }
 
     .photo-frame {
-        width: 175px;
-        height: 205px;
+        height: 350px;
     }
 
-    .wish {
-        font-size: 11px;
+    .decorations span {
+        font-size: 22px;
     }
 
-    .blessing {
-        font-size: 17px;
+    .birthday-wish {
+        padding: 20px 15px;
     }
 }
 
@@ -539,5 +524,6 @@ footer {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
     }
 }
