@@ -88,9 +88,12 @@ function showBirthday(person) {
     }
 
     displayPhoto(0);
-    createThumbnails();
-    startSlideshow();
-    launchConfetti();
+createThumbnails();
+startSlideshow();
+launchConfetti();
+
+// Start music when the visitor reveals their birthday page.
+startMusic();
 
     birthdayScreen.scrollIntoView({
         behavior: "smooth",
@@ -321,34 +324,40 @@ function playMelody() {
 }
 
 // Music button
-musicButton.addEventListener("click", async function() {
-    if (!musicPlaying) {
-        try {
-            const AudioContextClass =
-                window.AudioContext || window.webkitAudioContext;
 
-            if (!AudioContextClass) {
-                musicButton.textContent = "Music is not supported";
-                return;
-            }
+// Automatic celebration music and ON/OFF switch
 
-            if (!audioContext || audioContext.state === "closed") {
-                audioContext = new AudioContextClass();
-            }
+async function startMusic() {
+    try {
+        const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
 
-            await audioContext.resume();
-
-            musicPlaying = true;
-            musicButton.textContent = "♫ Pause Celebration Music";
-
-            playMelody();
-        } catch (error) {
-            musicButton.textContent = "Unable to play music";
+        if (!AudioContextClass) {
+            musicButton.textContent = "♫ Music unavailable";
+            return;
         }
-    } else {
-        stopMusic();
+
+        if (!audioContext || audioContext.state === "closed") {
+            audioContext = new AudioContextClass();
+        }
+
+        await audioContext.resume();
+
+        musicPlaying = true;
+        musicButton.textContent = "♫ Music: ON — Turn OFF";
+
+        if (melodyTimer) {
+            clearInterval(melodyTimer);
+            melodyTimer = null;
+        }
+
+        playMelody();
+
+    } catch (error) {
+        musicPlaying = false;
+        musicButton.textContent = "♫ Tap to enable music";
     }
-});
+}
 
 function stopMusic() {
     musicPlaying = false;
@@ -362,5 +371,14 @@ function stopMusic() {
         audioContext.suspend();
     }
 
-    musicButton.textContent = "♫ Play Celebration Music";
+    musicButton.textContent = "♫ Music: OFF — Turn ON";
 }
+
+// Button toggles music
+musicButton.addEventListener("click", function() {
+    if (musicPlaying) {
+        stopMusic();
+    } else {
+        startMusic();
+    }
+});
