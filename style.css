@@ -1,752 +1,316 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+/* =========================================
+   DIWALI HIDDEN PHOTO GAME
+========================================= */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    min-height: 100vh;
-    overflow-x: hidden;
-    font-family: 'Poppins', sans-serif;
-    color: #fff5dc;
-    background:
-        radial-gradient(ellipse at top, #75152e 0%, transparent 55%),
-        linear-gradient(135deg, #24000c, #4b071e 55%, #190008);
-    position: relative;
-}
-
-.background-glow {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background:
-        radial-gradient(circle at 15% 25%, #e8a32a22, transparent 25%),
-        radial-gradient(circle at 85% 70%, #ffcf5b1c, transparent 30%);
-    animation: glowPulse 5s ease-in-out infinite alternate;
-    z-index: 0;
-}
-
-@keyframes glowPulse {
-    from { opacity: 0.5; }
-    to { opacity: 1; }
-}
-
-/* Decorations */
-
-.decorations span {
-    position: fixed;
-    z-index: 1;
-    font-size: 30px;
-    pointer-events: none;
-    animation: floatDiya 6s ease-in-out infinite;
-    filter: drop-shadow(0 0 12px #ffca55);
-}
-
-.decorations span:nth-child(1) { top: 10%; left: 5%; }
-.decorations span:nth-child(2) { top: 20%; right: 8%; animation-delay: 1s; }
-.decorations span:nth-child(3) { bottom: 12%; left: 8%; animation-delay: 2s; }
-.decorations span:nth-child(4) { top: 50%; right: 4%; animation-delay: 3s; }
-.decorations span:nth-child(5) { bottom: 25%; right: 12%; animation-delay: 1.5s; }
-.decorations span:nth-child(6) { top: 65%; left: 3%; animation-delay: 2.5s; }
-.decorations span:nth-child(7) { top: 8%; right: 30%; animation-delay: 3.5s; }
-.decorations span:nth-child(8) { bottom: 8%; right: 35%; animation-delay: 4s; }
-
-@keyframes floatDiya {
-    0%, 100% { transform: translateY(0) rotate(-5deg); }
-    50% { transform: translateY(-22px) rotate(5deg); }
-}
-
-/* Falling petals */
-
-#petals {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 2;
-}
-
-.petal {
-    position: absolute;
-    top: -30px;
-    font-size: 18px;
-    animation: fallPetal linear infinite;
-    opacity: 0.8;
-}
-
-@keyframes fallPetal {
-    0% {
-        transform: translateY(-30px) rotate(0deg);
-        opacity: 0;
-    }
-    15% { opacity: 0.9; }
-    100% {
-        transform: translateY(110vh) rotate(600deg);
-        opacity: 0;
-    }
-}
-
-/* Welcome screen */
-
-.welcome-screen,
-.birthday-screen {
-    position: relative;
-    z-index: 3;
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 35px 18px;
-}
-
-.welcome-card {
-    width: min(520px, 100%);
+.hidden-game-section {
+    width: min(950px, 92%);
+    margin: 65px auto 45px;
+    padding: 35px 22px;
     text-align: center;
-    padding: 45px 30px;
-    border: 1px solid #e8bd6b;
-    border-radius: 25px;
-    background: linear-gradient(145deg, #64152aee, #310714f2);
-    box-shadow:
-        0 0 35px #e7a73530,
-        inset 0 0 25px #f5bd5220;
-    animation: cardAppear 1s ease both;
+    border: 1px solid rgba(235, 190, 100, 0.35);
+    border-radius: 24px;
+    background: linear-gradient(
+        145deg,
+        rgba(91, 20, 49, 0.78),
+        rgba(35, 8, 29, 0.94)
+    );
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
 }
 
-@keyframes cardAppear {
+.game-heading h2 {
+    color: #f8d98b;
+    font-size: clamp(25px, 5vw, 38px);
+    margin: 12px 0;
+    text-shadow: 0 0 18px rgba(255, 190, 70, 0.35);
+}
+
+.game-heading > p:last-child {
+    color: #f4dcb5;
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 12px auto 25px;
+}
+
+.game-scoreboard {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin: 25px 0 32px;
+    flex-wrap: wrap;
+}
+
+.score-box {
+    min-width: 135px;
+    padding: 15px 25px;
+    border: 1px solid rgba(255, 215, 140, 0.4);
+    border-radius: 15px;
+    background: rgba(255, 215, 140, 0.08);
+}
+
+.score-box span {
+    display: block;
+    color: #e9c68b;
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin-bottom: 7px;
+}
+
+.score-box strong {
+    display: block;
+    color: #ffe6a8;
+    font-size: 25px;
+}
+
+.game-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
+
+.game-card {
+    position: relative;
+    padding: 10px;
+    border: 1px solid rgba(255, 213, 130, 0.42);
+    border-radius: 18px;
+    background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.09),
+        rgba(255, 255, 255, 0.025)
+    );
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #fff1cf;
+    font: inherit;
+    min-width: 0;
+}
+
+.game-card:hover:not(:disabled) {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(255, 187, 70, 0.2);
+}
+
+.game-card:focus-visible {
+    outline: 3px solid #ffda83;
+    outline-offset: 4px;
+}
+
+.game-card:disabled {
+    cursor: default;
+    opacity: 1;
+}
+
+.game-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+}
+
+.game-card-label {
+    display: block;
+    padding: 13px 4px 5px;
+    color: #ffe3a4;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.game-card-status {
+    display: block;
+    font-size: 12px;
+    color: #e9c99a;
+    padding: 5px 0;
+}
+
+.game-card.discovered {
+    border-color: #ffd56d;
+    box-shadow: 0 0 22px rgba(255, 202, 91, 0.2);
+}
+
+.game-card.discovered .game-card-status {
+    color: #a8f0b5;
+}
+
+.game-feedback {
+    min-height: 55px;
+    margin: 25px auto 0;
+    padding: 15px;
+    max-width: 650px;
+    color: #ffe9b9;
+    font-size: 16px;
+    line-height: 1.6;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.055);
+}
+
+.game-result {
+    display: none;
+    margin: 25px auto 0;
+    padding: 25px 15px;
+    max-width: 600px;
+    border: 1px solid #eac16b;
+    border-radius: 18px;
+    background: rgba(255, 207, 113, 0.1);
+    animation: resultReveal 0.8s ease both;
+}
+
+.game-result.show {
+    display: block;
+}
+
+.game-result h2 {
+    color: #ffdc8b;
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.game-result p {
+    color: #ffedc9;
+    line-height: 1.7;
+}
+
+@keyframes resultReveal {
     from {
         opacity: 0;
-        transform: translateY(35px) scale(0.94);
+        transform: translateY(20px) scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
 }
 
-.top-diya {
-    font-size: 55px;
-    margin-bottom: 12px;
-    animation: diyaGlow 2s infinite alternate;
-}
+/* =========================================
+   ROCKET LAUNCH
+========================================= */
 
-@keyframes diyaGlow {
-    from { filter: drop-shadow(0 0 5px #ffbd48); }
-    to { filter: drop-shadow(0 0 25px #ffcf58); }
-}
-
-.small-heading {
-    color: #f7ce7b;
-    letter-spacing: 4px;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.welcome-card h1,
-.birthday-title {
-    font-family: 'Cormorant Garamond', serif;
-    color: #ffdb8b;
-    font-weight: 700;
-}
-
-.welcome-card h1 {
-    font-size: clamp(35px, 7vw, 52px);
-    line-height: 1.1;
-    margin: 18px 0;
-}
-
-.gold-line {
-    width: 90px;
-    height: 2px;
-    margin: 20px auto;
-    background: linear-gradient(90deg, transparent, #f6ca70, transparent);
-}
-
-.welcome-text {
-    font-size: 14px;
-    line-height: 1.8;
-    color: #f8e8d2;
-    margin-bottom: 25px;
-}
-
-#nameForm {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-#nameInput {
-    width: 100%;
-    padding: 15px 18px;
-    border-radius: 30px;
-    border: 1px solid #e6bd6b;
-    outline: none;
-    background: #290813;
-    color: white;
-    text-align: center;
-    font-size: 15px;
-}
-
-#nameInput::placeholder {
-    color: #d7b9a4;
-}
-
-#nameInput:focus {
-    box-shadow: 0 0 15px #f6c96a66;
-}
-
-.reveal-button,
-.music-control button {
-    border: none;
-    border-radius: 30px;
-    padding: 14px 22px;
-    background: linear-gradient(135deg, #f7d58a, #c78a30);
-    color: #3d0715;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.reveal-button:hover,
-.music-control button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px #e8b94b55;
-}
-
-.error-message {
-    color: #ffb0b0;
-    font-size: 13px;
-    margin-top: 12px;
-}
-
-.footer-note {
-    color: #d9bda6;
-    font-size: 11px;
-    margin-top: 30px;
-}
-
-/* Birthday page */
-
-.birthday-screen {
-    justify-content: flex-start;
-    padding-top: 55px;
-    animation: pageReveal 1s ease both;
-}
-
-@keyframes pageReveal {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.hidden {
-    display: none !important;
-}
-
-.celebration-header {
-    text-align: center;
-    max-width: 700px;
-    animation: slideDown 1s ease both;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.birthday-title {
-    font-size: clamp(46px, 9vw, 78px);
-    margin-top: 12px;
-    text-shadow: 0 0 18px #ffc65a88;
-    animation: titleGlow 2s ease-in-out infinite alternate;
-}
-
-@keyframes titleGlow {
-    from { text-shadow: 0 0 8px #ffcd69; }
-    to { text-shadow: 0 0 28px #ffcd69, 0 0 50px #d88b31; }
-}
-
-.person-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(30px, 6vw, 44px);
-    color: #fff1c8;
-    margin: 5px 0 15px;
-}
-
-.birthday-message {
-    font-size: 14px;
-    line-height: 1.8;
-    color: #f5ddc5;
-    padding: 0 10px;
-}
-
-/* Main photo */
-
-.photo-section {
-    margin-top: 35px;
-    text-align: center;
-    width: 100%;
-    max-width: 650px;
-}
-
-.photo-frame {
-    width: min(340px, 82vw);
-    height: 390px;
-    margin: 0 auto;
-    position: relative;
-    padding: 10px;
-    border: 3px solid #edc16b;
-    border-radius: 20px;
-    background: linear-gradient(145deg, #ffe6a7, #8e5719, #ffe6a7);
-    box-shadow:
-        0 0 20px #ffca5a88,
-        0 0 60px #e9a53544,
-        inset 0 0 12px #fff1c6;
-    animation: photoReveal 1.3s ease both, frameGlow 3s infinite alternate;
-}
-
-@keyframes photoReveal {
-    from {
-        opacity: 0;
-        transform: scale(0.65) rotate(-5deg);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) rotate(0);
-    }
-}
-
-@keyframes frameGlow {
-    from { box-shadow: 0 0 15px #ffca5a66, 0 0 30px #e9a53533; }
-    to { box-shadow: 0 0 30px #ffca5acc, 0 0 65px #e9a53577; }
-}
-
-.photo-frame img {
-    width: 100%;
-    height: calc(100% - 35px);
-    display: block;
-    object-fit: cover;
-    border-radius: 12px;
-    transition: opacity 0.35s, transform 0.5s;
-}
-
-.photo-frame img.changing {
-    opacity: 0;
-    transform: scale(1.04);
-}
-
-.photo-caption {
-    height: 27px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #5a270b;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-}
-
-.photo-instruction {
-    margin: 20px 0 12px;
-    color: #f5d28b;
-    font-size: 13px;
-}
-
-/* Photo controls */
-
-.photo-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 25px;
-    margin: 12px 0;
-    color: #ffe1a0;
-    font-size: 13px;
-}
-
-.photo-controls button {
-    width: 36px;
-    height: 36px;
-    border: 1px solid #e7bd69;
-    border-radius: 50%;
-    background: #5a1028;
-    color: #ffdf96;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.photo-controls button:hover {
-    background: #d49a3b;
-    color: #3b0814;
-    transform: scale(1.12);
-}
-
-.thumbnail-gallery {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin: 20px auto;
-}
-
-.thumbnail {
-    width: 68px;
-    height: 75px;
-    object-fit: cover;
-    border-radius: 9px;
-    border: 2px solid #9b6834;
-    opacity: 0.65;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.thumbnail:hover,
-.thumbnail.active {
-    opacity: 1;
-    border-color: #ffdc8c;
-    transform: translateY(-5px);
-    box-shadow: 0 0 15px #ffc95c77;
-}
-
-/* Birthday message card */
-
-.birthday-wish {
-    text-align: center;
-    width: min(500px, 92%);
-    margin: 25px auto;
-    padding: 25px;
-    border: 1px solid #b77c3a;
-    border-radius: 18px;
-    background: #64152a77;
-    box-shadow: 0 0 25px #e4ae4430;
-    animation: cardAppear 1s ease both;
-}
-
-.birthday-wish h2 {
-    font-family: 'Cormorant Garamond', serif;
-    color: #ffdb8b;
-    font-size: 32px;
-    margin: 8px 0;
-}
-
-.birthday-wish p {
-    font-size: 13px;
-    line-height: 1.8;
-    color: #f7e4cf;
-}
-
-.wish-decoration {
-    color: #f5c65f;
-    letter-spacing: 8px;
-}
-
-/* Music and back buttons */
-
-.music-control {
-    margin: 10px 0 20px;
-}
-
-.back-button {
-    border: 1px solid #e3b963;
-    border-radius: 30px;
-    background: transparent;
-    color: #ffe2a0;
-    padding: 11px 20px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.back-button:hover {
-    background: #e1b75e;
-    color: #390817;
-}
-
-/* Confetti */
-
-#confettiContainer {
+.rocket-flight {
     position: fixed;
-    inset: 0;
+    z-index: 9999;
+    left: 50%;
+    bottom: 8%;
+    font-size: 55px;
     pointer-events: none;
-    overflow: hidden;
-    z-index: 10;
+    transform: translateX(-50%) rotate(-45deg);
+    animation: rocketLaunch 1.5s ease-in forwards;
 }
 
-.confetti {
+@keyframes rocketLaunch {
+    0% {
+        bottom: 8%;
+        opacity: 1;
+        transform: translateX(-50%) rotate(-45deg) scale(0.7);
+    }
+
+    65% {
+        opacity: 1;
+    }
+
+    100% {
+        bottom: 85%;
+        opacity: 0;
+        transform: translateX(-50%) rotate(-45deg) scale(1.3);
+    }
+}
+
+/* =========================================
+   FIREWORKS BURST
+========================================= */
+
+.firework-burst {
+    position: fixed;
+    z-index: 10000;
+    left: 50%;
+    top: 25%;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+}
+
+.firework-spark {
     position: absolute;
-    top: -15px;
-    width: 9px;
-    height: 14px;
-    animation: confettiFall linear forwards;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ffd36d;
+    box-shadow: 0 0 12px #ffca58;
+    animation: sparkExplosion 1.1s ease-out forwards;
 }
 
-@keyframes confettiFall {
-    to {
-        transform: translateY(110vh) rotate(900deg);
+@keyframes sparkExplosion {
+    0% {
+        transform: translate(0, 0) scale(1.5);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--spark-x), var(--spark-y)) scale(0.1);
         opacity: 0;
     }
 }
 
-/* Mobile */
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
 
-@media (max-width: 600px) {
-    .welcome-card {
-        padding: 35px 22px;
+@media (max-width: 650px) {
+
+    .hidden-game-section {
+        padding: 25px 12px;
+        margin-top: 45px;
     }
 
-    .birthday-screen {
-        padding-top: 45px;
+    .game-cards {
+        gap: 10px;
     }
 
-    .photo-frame {
-        height: 350px;
+    .game-card {
+        padding: 6px;
+        border-radius: 12px;
     }
 
-    .decorations span {
-        font-size: 22px;
+    .game-card img {
+        height: 125px;
     }
 
-    .birthday-wish {
-        padding: 20px 15px;
+    .game-card-label {
+        font-size: 12px;
+        letter-spacing: 0;
+    }
+
+    .game-card-status {
+        font-size: 10px;
+    }
+
+    .score-box {
+        min-width: 115px;
+        padding: 12px;
+    }
+
+    .score-box strong {
+        font-size: 21px;
+    }
+}
+
+@media (max-width: 380px) {
+    .game-card img {
+        height: 100px;
+    }
+
+    .game-card-label {
+        font-size: 10px;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
+    .game-card,
+    .game-result,
+    .rocket-flight,
+    .firework-spark {
+        animation: none !important;
+        transition: none !important;
     }
-}
-
-
-/* ======================================
-   PREMIUM DIWALI THEME UPGRADE
-====================================== */
-
-:root {
-    --diwali-gold: #f5cc78;
-    --diwali-bright: #ffe6a5;
-    --diwali-red: #4b071b;
-    --diwali-wine: #25000d;
-}
-
-/* Richer festive background */
-body {
-    background:
-        radial-gradient(ellipse at 50% 0%, #a43b35 0%, transparent 42%),
-        radial-gradient(circle at 10% 90%, #9b531b44, transparent 30%),
-        radial-gradient(circle at 90% 80%, #a32c3e33, transparent 30%),
-        linear-gradient(145deg, #190009, #4b071b 50%, #21000c);
-}
-
-/* Subtle rangoli-inspired decorative pattern */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.12;
-    background-image:
-        repeating-conic-gradient(
-            from 0deg at 50% 50%,
-            transparent 0deg 10deg,
-            #e9bd69 10.5deg 11deg,
-            transparent 11.5deg 20deg
-        );
-    mask-image: radial-gradient(circle, black 0%, transparent 65%);
-}
-
-/* Premium welcome card */
-.welcome-card {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #e9c477;
-    background:
-        linear-gradient(145deg, #781d32ee, #330714f5);
-    box-shadow:
-        0 0 25px #f2bd5840,
-        0 0 70px #d69a3630,
-        inset 0 0 30px #ffd77b15;
-}
-
-.welcome-card::before {
-    content: "✧  ❖  ✧";
-    display: block;
-    color: #eac77d;
-    font-size: 17px;
-    letter-spacing: 10px;
-    margin-bottom: 20px;
-}
-
-.welcome-card::after {
-    content: "✧  ❖  ✧";
-    display: block;
-    color: #eac77d;
-    font-size: 17px;
-    letter-spacing: 10px;
-    margin-top: 25px;
-}
-
-/* Elegant festive heading */
-.birthday-title {
-    background: linear-gradient(
-        90deg,
-        #fff0c5,
-        #eab94f,
-        #fff2c9,
-        #d99b38,
-        #fff0c5
-    );
-    background-size: 250% auto;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: goldShimmer 5s linear infinite;
-}
-
-@keyframes goldShimmer {
-    to { background-position: 250% center; }
-}
-
-/* Golden ornamental photo frame */
-.photo-frame {
-    border: 5px double #f5d38d;
-    border-radius: 18px;
-    background: linear-gradient(
-        135deg,
-        #fff1bd,
-        #c28a35,
-        #fff0ad,
-        #9d621d
-    );
-    padding: 12px;
-    box-shadow:
-        0 0 20px #ffce68aa,
-        0 0 55px #f6b93e55,
-        0 15px 45px #00000077;
-}
-
-.photo-frame::before {
-    content: "✧";
-    position: absolute;
-    top: -24px;
-    left: -18px;
-    font-size: 45px;
-    color: #ffe4a0;
-    text-shadow: 0 0 20px #ffca58;
-    z-index: 3;
-}
-
-.photo-frame::after {
-    content: "✧";
-    position: absolute;
-    bottom: -22px;
-    right: -18px;
-    font-size: 45px;
-    color: #ffe4a0;
-    text-shadow: 0 0 20px #ffca58;
-    z-index: 3;
-}
-
-/* Richer birthday message */
-.birthday-wish {
-    border: 1px solid #e6bb69;
-    background:
-        linear-gradient(135deg, #751a31dd, #350918ee);
-    box-shadow:
-        0 0 25px #e4b45333,
-        inset 0 0 20px #ffd77912;
-    position: relative;
-}
-
-.birthday-wish::before,
-.birthday-wish::after {
-    content: "❖";
-    position: absolute;
-    color: #f6d28a;
-    font-size: 22px;
-    top: 12px;
-}
-
-.birthday-wish::before { left: 15px; }
-.birthday-wish::after { right: 15px; }
-
-/* Festive music switch */
-.music-control button {
-    border: 1px solid #ffe2a1;
-    background: linear-gradient(135deg, #ffe9ae, #d29a3c);
-    box-shadow: 0 0 18px #f2c45b44;
-    min-width: 230px;
-}
-
-/* Glowing thumbnail gallery */
-.thumbnail {
-    border: 2px solid #c08a40;
-    box-shadow: 0 3px 12px #00000055;
-}
-
-.thumbnail.active {
-    border: 2px solid #ffe5a0;
-    box-shadow:
-        0 0 12px #ffcf66,
-        0 0 25px #ffcf6644;
-}
-
-/* More atmospheric floating decorations */
-.decorations span {
-    filter: drop-shadow(0 0 12px #ffc95c);
-    animation: festiveFloat 5s ease-in-out infinite;
-}
-
-@keyframes festiveFloat {
-    0%, 100% {
-        transform: translateY(0) scale(1);
-    }
-    50% {
-        transform: translateY(-18px) scale(1.12);
-    }
-}
-
-/* Smooth page entrance */
-.birthday-screen:not(.hidden) .photo-section {
-    animation: photoSectionEnter 1.2s 0.3s both;
-}
-
-@keyframes photoSectionEnter {
-    from {
-        opacity: 0;
-        transform: translateY(35px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Festive button */
-.reveal-button {
-    background: linear-gradient(
-        120deg,
-        #fff0bd,
-        #dba64c,
-        #f9d987
-    );
-    background-size: 200% auto;
-    box-shadow: 0 0 18px #e8b74b44;
-}
-
-.reveal-button:hover {
-    background-position: right center;
-    box-shadow: 0 0 28px #f5ca6b88;
 }
