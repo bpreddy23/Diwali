@@ -3,9 +3,9 @@ window.PEOPLE = [
     {
         name: "Person 1",
         photos: [
-            "images/person1.jpg",
-            "images/person1-2.jpg",
-            "images/person1-3.jpg"
+            "images/person1.JPG",
+            "images/person1-2.JPG",
+            "images/person1-3.JPG"
         ]
     },
     {
