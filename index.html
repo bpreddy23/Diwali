@@ -1,12 +1,15 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diwali Birthday Celebration</title>
+    <meta name="theme-color" content="#310b20">
+    <title>AnuBhaVam | Diwali Wishes</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <div class="background-glow"></div>
@@ -28,21 +31,24 @@
 
     <!-- Welcome screen -->
     <main class="welcome-screen" id="welcomeScreen">
+
         <div class="welcome-card">
+
             <div class="top-diya">🪔</div>
 
-            <p class="small-heading">A LITTLE SURPRISE FOR YOU</p>
+            <p class="small-heading">A FESTIVAL OF LIGHTS & HAPPINESS</p>
 
-            <h1>Celebrate Your Special Day</h1>
+            <h1>Celebrate the Festival of Lights</h1>
 
             <div class="gold-line"></div>
 
             <p class="welcome-text">
-                A beautiful surprise is waiting for you.
-                Enter your name to discover it!
+                A little Diwali surprise is waiting for you.
+                Enter your name and discover your special wishes!
             </p>
 
             <form id="nameForm">
+
                 <input
                     type="text"
                     id="nameInput"
@@ -50,9 +56,11 @@
                     autocomplete="off"
                     required
                 >
+
                 <button type="submit" class="reveal-button">
-                    Reveal My Surprise ✨
+                    Reveal My Diwali Surprise ✨
                 </button>
+
             </form>
 
             <p id="errorMessage" class="error-message"></p>
@@ -60,51 +68,106 @@
             <p class="footer-note">
                 Made with ❤️ and festive magic
             </p>
+
         </div>
     </main>
 
-    <!-- Birthday celebration screen -->
+    <!-- Diwali celebration screen -->
     <main class="birthday-screen hidden" id="birthdayScreen">
 
         <div class="celebration-header">
+
             <p class="small-heading">LIGHTS • LOVE • HAPPINESS</p>
 
             <h1 class="birthday-title">
-                Happy Birthday!
+                Happy Diwali!
             </h1>
 
             <h2 id="personName" class="person-name"></h2>
 
             <p class="birthday-message">
                 May your life shine brighter than a thousand diyas.
-                Wishing you endless happiness, love and success!
+                Wishing you endless happiness, love and prosperity!
             </p>
+
         </div>
 
-        <!-- Main photo -->
+        <!-- Main photo gallery -->
         <section class="photo-section">
+
             <div class="photo-frame" id="photoFrame">
+
                 <div class="photo-glow"></div>
-                <img id="mainPhoto" src="" alt="Birthday person's photo">
-                <div class="photo-caption">A SPECIAL MOMENT ❤️</div>
+
+                <img id="mainPhoto" src="" alt="Diwali memories">
+
+                <div class="photo-caption">BEAUTIFUL MEMORIES ❤️</div>
+
             </div>
 
             <p class="photo-instruction">
                 A collection of beautiful memories
             </p>
 
-            <!-- Photo controls -->
             <div class="photo-controls">
+
                 <button id="previousPhoto" aria-label="Previous photo">❮</button>
+
                 <span id="photoCounter">1 / 3</span>
+
                 <button id="nextPhoto" aria-label="Next photo">❯</button>
+
             </div>
 
-            <!-- Thumbnails -->
             <div class="thumbnail-gallery" id="thumbnailGallery"></div>
+
         </section>
 
+        <!-- NEW: Hidden Diwali surprise game -->
+        <section class="hidden-game-section" id="hiddenGame">
+
+            <div class="game-heading">
+
+                <p class="small-heading">A LITTLE FESTIVE CHALLENGE</p>
+
+                <h2>Find the Hidden Diwali Surprises!</h2>
+
+                <p>
+                    Three photos. Hidden messages. One spectacular
+                    fireworks surprise. Can you discover them all?
+                </p>
+
+            </div>
+
+            <div class="game-scoreboard">
+
+                <div class="score-box">
+                    <span>YOUR SCORE</span>
+                    <strong id="gameScore">0 / 100</strong>
+                </div>
+
+                <div class="score-box">
+                    <span>DISCOVERED</span>
+                    <strong id="gameProgress">0 / 3</strong>
+                </div>
+
+            </div>
+
+            <div class="game-cards" id="gameCards"></div>
+
+            <p
+                class="game-feedback"
+                id="gameFeedback"
+                aria-live="polite"
+            >
+                Tap a photo to uncover its secret!
+            </p>
+
+        </section>
+
+        <!-- Final Diwali wishes -->
         <div class="birthday-wish">
+
             <div class="wish-decoration">✦ ✧ ✦</div>
 
             <h2>Keep Shining!</h2>
@@ -115,6 +178,7 @@
             </p>
 
             <div class="wish-decoration">🪔 ✨ 🪔</div>
+
         </div>
 
         <div class="music-control">
@@ -128,6 +192,9 @@
     </main>
 
     <div id="confettiContainer" aria-hidden="true"></div>
+
+    <!-- New fireworks animation layer -->
+    <div id="gameFireworks" aria-hidden="true"></div>
 
     <script src="people.js"></script>
     <script src="script.js"></script>
