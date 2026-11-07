@@ -527,3 +527,226 @@ body {
         scroll-behavior: auto !important;
     }
 }
+
+
+/* ======================================
+   PREMIUM DIWALI THEME UPGRADE
+====================================== */
+
+:root {
+    --diwali-gold: #f5cc78;
+    --diwali-bright: #ffe6a5;
+    --diwali-red: #4b071b;
+    --diwali-wine: #25000d;
+}
+
+/* Richer festive background */
+body {
+    background:
+        radial-gradient(ellipse at 50% 0%, #a43b35 0%, transparent 42%),
+        radial-gradient(circle at 10% 90%, #9b531b44, transparent 30%),
+        radial-gradient(circle at 90% 80%, #a32c3e33, transparent 30%),
+        linear-gradient(145deg, #190009, #4b071b 50%, #21000c);
+}
+
+/* Subtle rangoli-inspired decorative pattern */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.12;
+    background-image:
+        repeating-conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg 10deg,
+            #e9bd69 10.5deg 11deg,
+            transparent 11.5deg 20deg
+        );
+    mask-image: radial-gradient(circle, black 0%, transparent 65%);
+}
+
+/* Premium welcome card */
+.welcome-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #e9c477;
+    background:
+        linear-gradient(145deg, #781d32ee, #330714f5);
+    box-shadow:
+        0 0 25px #f2bd5840,
+        0 0 70px #d69a3630,
+        inset 0 0 30px #ffd77b15;
+}
+
+.welcome-card::before {
+    content: "✧  ❖  ✧";
+    display: block;
+    color: #eac77d;
+    font-size: 17px;
+    letter-spacing: 10px;
+    margin-bottom: 20px;
+}
+
+.welcome-card::after {
+    content: "✧  ❖  ✧";
+    display: block;
+    color: #eac77d;
+    font-size: 17px;
+    letter-spacing: 10px;
+    margin-top: 25px;
+}
+
+/* Elegant festive heading */
+.birthday-title {
+    background: linear-gradient(
+        90deg,
+        #fff0c5,
+        #eab94f,
+        #fff2c9,
+        #d99b38,
+        #fff0c5
+    );
+    background-size: 250% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: goldShimmer 5s linear infinite;
+}
+
+@keyframes goldShimmer {
+    to { background-position: 250% center; }
+}
+
+/* Golden ornamental photo frame */
+.photo-frame {
+    border: 5px double #f5d38d;
+    border-radius: 18px;
+    background: linear-gradient(
+        135deg,
+        #fff1bd,
+        #c28a35,
+        #fff0ad,
+        #9d621d
+    );
+    padding: 12px;
+    box-shadow:
+        0 0 20px #ffce68aa,
+        0 0 55px #f6b93e55,
+        0 15px 45px #00000077;
+}
+
+.photo-frame::before {
+    content: "✧";
+    position: absolute;
+    top: -24px;
+    left: -18px;
+    font-size: 45px;
+    color: #ffe4a0;
+    text-shadow: 0 0 20px #ffca58;
+    z-index: 3;
+}
+
+.photo-frame::after {
+    content: "✧";
+    position: absolute;
+    bottom: -22px;
+    right: -18px;
+    font-size: 45px;
+    color: #ffe4a0;
+    text-shadow: 0 0 20px #ffca58;
+    z-index: 3;
+}
+
+/* Richer birthday message */
+.birthday-wish {
+    border: 1px solid #e6bb69;
+    background:
+        linear-gradient(135deg, #751a31dd, #350918ee);
+    box-shadow:
+        0 0 25px #e4b45333,
+        inset 0 0 20px #ffd77912;
+    position: relative;
+}
+
+.birthday-wish::before,
+.birthday-wish::after {
+    content: "❖";
+    position: absolute;
+    color: #f6d28a;
+    font-size: 22px;
+    top: 12px;
+}
+
+.birthday-wish::before { left: 15px; }
+.birthday-wish::after { right: 15px; }
+
+/* Festive music switch */
+.music-control button {
+    border: 1px solid #ffe2a1;
+    background: linear-gradient(135deg, #ffe9ae, #d29a3c);
+    box-shadow: 0 0 18px #f2c45b44;
+    min-width: 230px;
+}
+
+/* Glowing thumbnail gallery */
+.thumbnail {
+    border: 2px solid #c08a40;
+    box-shadow: 0 3px 12px #00000055;
+}
+
+.thumbnail.active {
+    border: 2px solid #ffe5a0;
+    box-shadow:
+        0 0 12px #ffcf66,
+        0 0 25px #ffcf6644;
+}
+
+/* More atmospheric floating decorations */
+.decorations span {
+    filter: drop-shadow(0 0 12px #ffc95c);
+    animation: festiveFloat 5s ease-in-out infinite;
+}
+
+@keyframes festiveFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-18px) scale(1.12);
+    }
+}
+
+/* Smooth page entrance */
+.birthday-screen:not(.hidden) .photo-section {
+    animation: photoSectionEnter 1.2s 0.3s both;
+}
+
+@keyframes photoSectionEnter {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Festive button */
+.reveal-button {
+    background: linear-gradient(
+        120deg,
+        #fff0bd,
+        #dba64c,
+        #f9d987
+    );
+    background-size: 200% auto;
+    box-shadow: 0 0 18px #e8b74b44;
+}
+
+.reveal-button:hover {
+    background-position: right center;
+    box-shadow: 0 0 28px #f5ca6b88;
+}
