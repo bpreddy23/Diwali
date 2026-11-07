@@ -1,46 +1,39 @@
-// GET HTML ELEMENTS
 
 const nameForm = document.getElementById("nameForm");
 const nameInput = document.getElementById("nameInput");
+const errorMessage = document.getElementById("errorMessage");
 
 const welcomeScreen = document.getElementById("welcomeScreen");
 const birthdayScreen = document.getElementById("birthdayScreen");
 
 const personName = document.getElementById("personName");
-const personImage = document.getElementById("personImage");
+const mainPhoto = document.getElementById("mainPhoto");
+const thumbnailGallery = document.getElementById("thumbnailGallery");
 
-const photoFrame = document.getElementById("photoFrame");
-const photoFallback = document.getElementById("photoFallback");
+const photoCounter = document.getElementById("photoCounter");
+const previousPhotoButton = document.getElementById("previousPhoto");
+const nextPhotoButton = document.getElementById("nextPhoto");
 
-const errorMessage = document.getElementById("errorMessage");
+const backButton = document.getElementById("backButton");
+const musicButton = document.getElementById("musicButton");
 
+const petalsContainer = document.getElementById("petals");
+const confettiContainer = document.getElementById("confettiContainer");
 
-// NAME NORMALIZATION
+let currentPhotos = [];
+let currentPhotoIndex = 0;
+let slideshowTimer = null;
+let musicPlaying = false;
+let audioContext = null;
+let melodyTimer = null;
 
+// Normalize names so that capitalization and extra spaces do not matter.
 function normalizeName(name) {
     return name.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
-
-// GET INITIALS
-
-function getInitials(name) {
-
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map(word => word.charAt(0))
-        .join("")
-        .toUpperCase();
-
-}
-
-
-// NAME SUBMISSION
-
+// Name form
 nameForm.addEventListener("submit", function(event) {
-
     event.preventDefault();
 
     const enteredName = nameInput.value.trim();
@@ -50,280 +43,323 @@ nameForm.addEventListener("submit", function(event) {
         return;
     }
 
-    // FIND PERSON
-
-    const person = PEOPLE.find(function(item) {
-
-        return normalizeName(item.name) ===
-               normalizeName(enteredName);
-
-    });
-
-    errorMessage.textContent = "";
-
-    showBirthday(person, enteredName);
-
-});
-
-
-// DISPLAY BIRTHDAY WISH
-
-function showBirthday(person, enteredName) {
-
-    const displayName = person ? person.name : enteredName;
-
-    personName.textContent = displayName;
-
-    // INITIALS FALLBACK
-
-    document.getElementById("photoFallback")
-        .querySelector("span").textContent = getInitials(displayName);
-
-    // RESET PHOTO
-
-    personImage.onload = null;
-    personImage.onerror = null;
-
-    personImage.classList.remove("loaded");
-    photoFrame.classList.remove("has-photo");
-    photoFrame.classList.remove("reveal");
-
-    personImage.removeAttribute("src");
-
-    photoFallback.style.display = "flex";
-
-    // LOAD PERSON'S PHOTO
-
-    if (person && person.photo) {
-
-        personImage.onload = function() {
-
-            personImage.classList.add("loaded");
-            photoFrame.classList.add("has-photo");
-
-            photoFallback.style.display = "none";
-
-        };
-
-        personImage.onerror = function() {
-
-            personImage.classList.remove("loaded");
-            photoFrame.classList.remove("has-photo");
-
-            photoFallback.style.display = "flex";
-
-        };
-
-        personImage.src = person.photo;
-
+    if (!Array.isArray(window.PEOPLE)) {
+        errorMessage.textContent = "Unable to load the birthday list. Please refresh.";
+        return;
     }
 
-    // CHANGE SCREEN
+    const person = window.PEOPLE.find(function(item) {
+        return normalizeName(item.name) === normalizeName(enteredName);
+    });
+
+    if (!person) {
+        errorMessage.textContent = "Name not found. Please check the spelling!";
+        return;
+    }
+
+    errorMessage.textContent = "";
+    showBirthday(person);
+});
+
+// Show the birthday page
+function showBirthday(person) {
+    stopSlideshow();
+    stopMusic();
 
     welcomeScreen.classList.add("hidden");
     birthdayScreen.classList.remove("hidden");
 
-    // MAGICAL PHOTO REVEAL
+    personName.textContent = person.name;
 
-    requestAnimationFrame(function() {
+    currentPhotos = Array.isArray(person.photos)
+        ? person.photos.filter(Boolean)
+        : [];
 
-        requestAnimationFrame(function() {
+    currentPhotoIndex = 0;
 
-            photoFrame.classList.add("reveal");
+    thumbnailGallery.innerHTML = "";
 
-        });
-
-    });
-
-    // CONFETTI EFFECT
-
-    createConfetti();
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-// CONFETTI GENERATOR
-
-function createConfetti() {
-
-    const container = document.getElementById("confetti");
-
-    container.innerHTML = "";
-
-    for (let i = 0; i < 90; i++) {
-
-        const piece = document.createElement("div");
-
-        piece.className = "confetti-piece";
-
-        piece.style.left = Math.random() * 100 + "%";
-
-        piece.style.animationDuration =
-            (3 + Math.random() * 3) + "s";
-
-        piece.style.animationDelay =
-            Math.random() * 1.5 + "s";
-
-        if (i % 3 === 0) {
-            piece.style.borderRadius = "50%";
-        }
-
-        container.appendChild(piece);
-
+    if (currentPhotos.length === 0) {
+        mainPhoto.src = "";
+        mainPhoto.alt = "No photo available";
+        photoCounter.textContent = "No photos";
+        return;
     }
 
-    setTimeout(function() {
+    displayPhoto(0);
+    createThumbnails();
+    startSlideshow();
+    launchConfetti();
 
-        container.innerHTML = "";
-
-    }, 7500);
-
+    birthdayScreen.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 }
 
+// Display selected photo
+function displayPhoto(index) {
+    if (!currentPhotos.length) return;
 
-// GO BACK TO NAME ENTRY
+    currentPhotoIndex = (index + currentPhotos.length) % currentPhotos.length;
 
-function goBack() {
+    mainPhoto.classList.add("changing");
+
+    const newImage = new Image();
+
+    newImage.onload = function() {
+        mainPhoto.src = newImage.src;
+        mainPhoto.alt = "Photo of " + personName.textContent;
+        mainPhoto.classList.remove("changing");
+
+        photoCounter.textContent =
+            (currentPhotoIndex + 1) + " / " + currentPhotos.length;
+
+        updateThumbnails();
+    };
+
+    newImage.onerror = function() {
+        currentPhotos.splice(currentPhotoIndex, 1);
+
+        if (currentPhotos.length === 0) {
+            mainPhoto.removeAttribute("src");
+            photoCounter.textContent = "No photos found";
+            thumbnailGallery.innerHTML = "";
+            stopSlideshow();
+            return;
+        }
+
+        currentPhotoIndex = currentPhotoIndex % currentPhotos.length;
+        displayPhoto(currentPhotoIndex);
+    };
+
+    newImage.src = currentPhotos[currentPhotoIndex];
+}
+
+// Create thumbnail images
+function createThumbnails() {
+    thumbnailGallery.innerHTML = "";
+
+    currentPhotos.forEach(function(photo, index) {
+        const thumbnail = document.createElement("img");
+
+        thumbnail.src = photo;
+        thumbnail.alt = "Photo " + (index + 1);
+        thumbnail.className = "thumbnail";
+
+        thumbnail.addEventListener("click", function() {
+            displayPhoto(index);
+            startSlideshow();
+        });
+
+        thumbnail.onerror = function() {
+            thumbnail.remove();
+        };
+
+        thumbnailGallery.appendChild(thumbnail);
+    });
+
+    updateThumbnails();
+}
+
+// Highlight active thumbnail
+function updateThumbnails() {
+    const thumbnails = thumbnailGallery.querySelectorAll(".thumbnail");
+
+    thumbnails.forEach(function(thumbnail, index) {
+        thumbnail.classList.toggle(
+            "active",
+            index === currentPhotoIndex
+        );
+    });
+}
+
+// Previous and next photo buttons
+previousPhotoButton.addEventListener("click", function() {
+    displayPhoto(currentPhotoIndex - 1);
+    startSlideshow();
+});
+
+nextPhotoButton.addEventListener("click", function() {
+    displayPhoto(currentPhotoIndex + 1);
+    startSlideshow();
+});
+
+// Automatic slideshow
+function startSlideshow() {
+    stopSlideshow();
+
+    if (currentPhotos.length < 2) return;
+
+    slideshowTimer = setInterval(function() {
+        displayPhoto(currentPhotoIndex + 1);
+    }, 4000);
+}
+
+function stopSlideshow() {
+    if (slideshowTimer) {
+        clearInterval(slideshowTimer);
+        slideshowTimer = null;
+    }
+}
+
+// Return to welcome screen
+backButton.addEventListener("click", function() {
+    stopSlideshow();
+    stopMusic();
 
     birthdayScreen.classList.add("hidden");
     welcomeScreen.classList.remove("hidden");
 
     nameInput.value = "";
-
     errorMessage.textContent = "";
 
-    nameInput.focus();
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+    welcomeScreen.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
     });
+});
 
+// Falling flower petals
+function createPetals() {
+    const flowers = ["🌸", "🌼", "🌺"];
+
+    for (let i = 0; i < 20; i++) {
+        const petal = document.createElement("span");
+
+        petal.className = "petal";
+        petal.textContent = flowers[
+            Math.floor(Math.random() * flowers.length)
+        ];
+
+        petal.style.left = Math.random() * 100 + "%";
+        petal.style.animationDuration = (6 + Math.random() * 8) + "s";
+        petal.style.animationDelay = (Math.random() * 8) + "s";
+        petal.style.fontSize = (12 + Math.random() * 13) + "px";
+
+        petalsContainer.appendChild(petal);
+    }
 }
 
-document.getElementById("backButton")
-    .addEventListener("click", goBack);
+createPetals();
 
-document.getElementById("againButton")
-    .addEventListener("click", goBack);
+// Confetti celebration
+function launchConfetti() {
+    confettiContainer.innerHTML = "";
 
+    const pieces = 100;
 
-// FESTIVE MUSIC
+    for (let i = 0; i < pieces; i++) {
+        const piece = document.createElement("span");
 
-// Original Diwali-inspired bell melody.
-// No external music file required.
+        piece.className = "confetti";
+        piece.style.left = Math.random() * 100 + "%";
+        piece.style.animationDuration = (3 + Math.random() * 4) + "s";
+        piece.style.animationDelay = Math.random() * 2 + "s";
 
-let audioContext = null;
-let musicPlaying = false;
-let musicTimer = null;
-let noteIndex = 0;
+        piece.style.backgroundColor = [
+            "#ffdb72",
+            "#f4a340",
+            "#ff6d86",
+            "#fff1c5",
+            "#e8b4ff"
+        ][Math.floor(Math.random() * 5)];
 
-const melody = [
-    392, 440, 523, 587,
-    523, 440, 392, 330,
-    392, 523, 587, 659,
-    587, 523, 440, 392
-];
+        piece.style.transform = "rotate(" + Math.random() * 360 + "deg)";
 
-function playNote(frequency, time, duration) {
+        confettiContainer.appendChild(piece);
 
-    const oscillator = audioContext.createOscillator();
-
-    const gain = audioContext.createGain();
-
-    oscillator.type = "sine";
-
-    oscillator.frequency.setValueAtTime(
-        frequency,
-        time
-    );
-
-    gain.gain.setValueAtTime(0.0001, time);
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.035,
-        time + 0.03
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        time + duration
-    );
-
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-
-    oscillator.start(time);
-    oscillator.stop(time + duration + 0.05);
-
+        setTimeout(function() {
+            piece.remove();
+        }, 8000);
+    }
 }
 
+// Original Diwali-inspired bell melody using Web Audio.
+// This is synthesized in the browser, not a recorded song.
 function playMelody() {
-
-    if (!musicPlaying) return;
-
-    const currentTime = audioContext.currentTime + 0.04;
-
-    const frequency = melody[noteIndex % melody.length];
-
-    playNote(frequency, currentTime, 0.7);
-
-    if (noteIndex % 4 === 0) {
-
-        playNote(196, currentTime, 1.2);
-
+    if (!audioContext || audioContext.state === "closed") {
+        return;
     }
 
-    noteIndex++;
+    const notes = [
+        523.25, 659.25, 783.99, 659.25,
+        587.33, 698.46, 880.00, 783.99,
+        659.25, 783.99, 1046.50, 783.99
+    ];
 
+    let noteIndex = 0;
+
+    melodyTimer = setInterval(function() {
+        if (!musicPlaying) return;
+
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        oscillator.type = "sine";
+        oscillator.frequency.value = notes[noteIndex];
+
+        gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(
+            0.08,
+            audioContext.currentTime + 0.03
+        );
+        gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            audioContext.currentTime + 0.7
+        );
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.75);
+
+        noteIndex = (noteIndex + 1) % notes.length;
+    }, 450);
 }
 
-async function toggleMusic() {
-
-    const button = document.getElementById("musicButton");
-
+// Music button
+musicButton.addEventListener("click", async function() {
     if (!musicPlaying) {
+        try {
+            const AudioContextClass =
+                window.AudioContext || window.webkitAudioContext;
 
-        const AudioContext =
-            window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) {
+                musicButton.textContent = "Music is not supported";
+                return;
+            }
 
-        if (!AudioContext) {
-            button.textContent = "Music unavailable";
-            return;
-        }
+            if (!audioContext || audioContext.state === "closed") {
+                audioContext = new AudioContextClass();
+            }
 
-        audioContext = audioContext || new AudioContext();
-
-        if (audioContext.state === "suspended") {
             await audioContext.resume();
+
+            musicPlaying = true;
+            musicButton.textContent = "♫ Pause Celebration Music";
+
+            playMelody();
+        } catch (error) {
+            musicButton.textContent = "Unable to play music";
         }
-
-        musicPlaying = true;
-
-        playMelody();
-
-        musicTimer = setInterval(playMelody, 430);
-
-        button.textContent = "♫ Pause Music";
-
     } else {
+        stopMusic();
+    }
+});
 
-        musicPlaying = false;
+function stopMusic() {
+    musicPlaying = false;
 
-        clearInterval(musicTimer);
-
-        await audioContext.suspend();
-
-        button.textContent = "♫ Play Festive Music";
-
+    if (melodyTimer) {
+        clearInterval(melodyTimer);
+        melodyTimer = null;
     }
 
-}
+    if (audioContext && audioContext.state !== "closed") {
+        audioContext.suspend();
+    }
 
-document.getElementById("musicButton")
-    .addEventListener("click", toggleMusic);
+    musicButton.textContent = "♫ Play Celebration Music";
+}
