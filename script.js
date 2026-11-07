@@ -49,8 +49,9 @@ nameForm.addEventListener("submit", function(event) {
     }
 
     const person = window.PEOPLE.find(function(item) {
-        return normalizeName(item.name) === normalizeName(enteredName);
-    });
+    return item.name.trim().toLowerCase() ===
+           enteredName.trim().toLowerCase();
+});
 
     if (!person) {
         errorMessage.textContent = "Name not found. Please check the spelling!";
