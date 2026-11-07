@@ -1,13 +1,13 @@
 
-/* =========================================
-   ANUBHAVAM - DIWALI WISHES WEBSITE
-   Complete script.js
-========================================= */
+/* ==========================================
+   ANUBHAVAM - DIWALI WISHES
+   Complete website JavaScript
+========================================== */
 
 
-/* =========================================
+/* ==========================================
    1. HTML ELEMENTS
-========================================= */
+========================================== */
 
 const nameForm = document.getElementById("nameForm");
 const nameInput = document.getElementById("nameInput");
@@ -30,16 +30,16 @@ const musicButton = document.getElementById("musicButton");
 const petalsContainer = document.getElementById("petals");
 const confettiContainer = document.getElementById("confettiContainer");
 
-const gameCardsContainer = document.getElementById("gameCards");
-const gameScoreDisplay = document.getElementById("gameScore");
-const gameProgressDisplay = document.getElementById("gameProgress");
+const gameCards = document.getElementById("gameCards");
+const gameScore = document.getElementById("gameScore");
+const gameProgress = document.getElementById("gameProgress");
 const gameFeedback = document.getElementById("gameFeedback");
 const gameFireworks = document.getElementById("gameFireworks");
 
 
-/* =========================================
-   2. GLOBAL VARIABLES
-========================================= */
+/* ==========================================
+   2. VARIABLES
+========================================== */
 
 let currentPhotos = [];
 let currentPhotoIndex = 0;
@@ -50,45 +50,51 @@ let musicPlaying = false;
 let audioContext = null;
 let melodyTimer = null;
 
-// Game variables
-let gamePhotos = [];
 let discoveredPhotos = new Set();
-let gameScore = 0;
+let totalScore = 0;
 let rocketClicked = false;
 
+const MESSAGE_POINTS = 20;
+const ROCKET_POINTS = 60;
 
-/* =========================================
+
+/* ==========================================
    3. HIDDEN MESSAGES
-========================================= */
-
-// The first two photos contain hidden messages.
-// The third photo contains the rocket surprise.
+========================================== */
 
 const hiddenMessages = [
-    "✨ May your life always be filled with light, laughter and happiness!",
-
-    "🌸 May every new beginning bring success, prosperity and beautiful memories!"
+    {
+        title: "A Little Diwali Magic ✨",
+        message: "May your life always be filled with light, laughter and beautiful memories. Happy Diwali!"
+    },
+    {
+        title: "A Wish Just for You 🪔",
+        message: "May every diya bring new hope, every sparkle bring happiness and every moment bring a reason to smile. Happy Diwali!"
+    }
 ];
 
 
-/* =========================================
-   4. NAME NORMALIZATION
-========================================= */
+/* ==========================================
+   4. NORMALIZE NAMES
+========================================== */
 
 function normalizeName(name) {
-    return name.trim().toLowerCase().replace(/\s+/g, " ");
+    return name
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
 }
 
 
-/* =========================================
-   5. NAME ENTRY
-========================================= */
+/* ==========================================
+   5. NAME FORM SUBMISSION
+========================================== */
 
 nameForm.addEventListener("submit", function(event) {
 
     event.preventDefault();
 
-    const enteredName = nameInput.value.trim();
+    const enteredName = normalizeName(nameInput.value);
 
     if (!enteredName) {
         errorMessage.textContent = "Please enter your name!";
@@ -97,22 +103,19 @@ nameForm.addEventListener("submit", function(event) {
 
     if (!Array.isArray(window.PEOPLE)) {
         errorMessage.textContent =
-            "Unable to load the wishes list. Please refresh.";
-
+            "Unable to load the wishes list. Please refresh the page.";
         return;
     }
 
     const person = window.PEOPLE.find(function(item) {
 
-        return normalizeName(item.name) === normalizeName(enteredName);
+        return normalizeName(item.name) === enteredName;
 
     });
 
     if (!person) {
-
         errorMessage.textContent =
             "Name not found. Please check the spelling!";
-
         return;
     }
 
@@ -123,9 +126,9 @@ nameForm.addEventListener("submit", function(event) {
 });
 
 
-/* =========================================
-   6. SHOW DIWALI WISHES PAGE
-========================================= */
+/* ==========================================
+   6. SHOW DIWALI CELEBRATION
+========================================== */
 
 function showBirthday(person) {
 
@@ -150,9 +153,14 @@ function showBirthday(person) {
         mainPhoto.removeAttribute("src");
         mainPhoto.alt = "No photo available";
 
-        photoCounter.textContent = "No photos";
+        photoCounter.textContent = "No photos available";
 
         startHiddenPhotoGame([]);
+
+        birthdayScreen.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
 
         return;
     }
@@ -165,10 +173,9 @@ function showBirthday(person) {
 
     launchConfetti();
 
-    // Start the hidden-photo challenge.
     startHiddenPhotoGame(currentPhotos);
 
-    // Attempt to start music following the visitor's name submission.
+    // Attempt to start music after the visitor submits their name.
     startMusic();
 
     birthdayScreen.scrollIntoView({
@@ -179,9 +186,9 @@ function showBirthday(person) {
 }
 
 
-/* =========================================
+/* ==========================================
    7. DISPLAY MAIN PHOTO
-========================================= */
+========================================== */
 
 function displayPhoto(index) {
 
@@ -192,13 +199,15 @@ function displayPhoto(index) {
 
     mainPhoto.classList.add("changing");
 
+    const selectedPhoto = currentPhotos[currentPhotoIndex];
+
     const newImage = new Image();
 
     newImage.onload = function() {
 
         mainPhoto.src = newImage.src;
 
-        mainPhoto.alt = "Diwali memories of " + personName.textContent;
+        mainPhoto.alt = "Photo of " + personName.textContent;
 
         mainPhoto.classList.remove("changing");
 
@@ -210,6 +219,8 @@ function displayPhoto(index) {
     };
 
     newImage.onerror = function() {
+
+        console.error("Unable to load photo:", selectedPhoto);
 
         currentPhotos.splice(currentPhotoIndex, 1);
 
@@ -229,18 +240,20 @@ function displayPhoto(index) {
         currentPhotoIndex =
             currentPhotoIndex % currentPhotos.length;
 
+        createThumbnails();
+
         displayPhoto(currentPhotoIndex);
 
     };
 
-    newImage.src = currentPhotos[currentPhotoIndex];
+    newImage.src = selectedPhoto;
 
 }
 
 
-/* =========================================
+/* ==========================================
    8. CREATE PHOTO THUMBNAILS
-========================================= */
+========================================== */
 
 function createThumbnails() {
 
@@ -279,9 +292,9 @@ function createThumbnails() {
 }
 
 
-/* =========================================
+/* ==========================================
    9. UPDATE ACTIVE THUMBNAIL
-========================================= */
+========================================== */
 
 function updateThumbnails() {
 
@@ -300,11 +313,13 @@ function updateThumbnails() {
 }
 
 
-/* =========================================
+/* ==========================================
    10. PREVIOUS AND NEXT PHOTO
-========================================= */
+========================================== */
 
 previousPhotoButton.addEventListener("click", function() {
+
+    if (!currentPhotos.length) return;
 
     displayPhoto(currentPhotoIndex - 1);
 
@@ -315,6 +330,8 @@ previousPhotoButton.addEventListener("click", function() {
 
 nextPhotoButton.addEventListener("click", function() {
 
+    if (!currentPhotos.length) return;
+
     displayPhoto(currentPhotoIndex + 1);
 
     startSlideshow();
@@ -322,9 +339,9 @@ nextPhotoButton.addEventListener("click", function() {
 });
 
 
-/* =========================================
-   11. AUTOMATIC PHOTO SLIDESHOW
-========================================= */
+/* ==========================================
+   11. AUTOMATIC SLIDESHOW
+========================================== */
 
 function startSlideshow() {
 
@@ -354,9 +371,9 @@ function stopSlideshow() {
 }
 
 
-/* =========================================
+/* ==========================================
    12. BACK TO WELCOME SCREEN
-========================================= */
+========================================== */
 
 backButton.addEventListener("click", function() {
 
@@ -364,9 +381,9 @@ backButton.addEventListener("click", function() {
 
     stopMusic();
 
-    welcomeScreen.classList.remove("hidden");
-
     birthdayScreen.classList.add("hidden");
+
+    welcomeScreen.classList.remove("hidden");
 
     nameInput.value = "";
 
@@ -380,13 +397,15 @@ backButton.addEventListener("click", function() {
 });
 
 
-/* =========================================
+/* ==========================================
    13. FALLING FLOWER PETALS
-========================================= */
+========================================== */
 
 function createPetals() {
 
-    const flowers = ["🌸", "🌼", "🌺"];
+    if (!petalsContainer) return;
+
+    const flowers = ["🌸", "🌼", "🌺", "✨"];
 
     for (let i = 0; i < 20; i++) {
 
@@ -417,15 +436,25 @@ function createPetals() {
 createPetals();
 
 
-/* =========================================
+/* ==========================================
    14. CONFETTI CELEBRATION
-========================================= */
+========================================== */
 
 function launchConfetti() {
+
+    if (!confettiContainer) return;
 
     confettiContainer.innerHTML = "";
 
     const pieces = 100;
+
+    const colors = [
+        "#ffdb72",
+        "#f4a340",
+        "#ff6d86",
+        "#fff1c5",
+        "#e8b4ff"
+    ];
 
     for (let i = 0; i < pieces; i++) {
 
@@ -441,13 +470,8 @@ function launchConfetti() {
         piece.style.animationDelay =
             Math.random() * 2 + "s";
 
-        piece.style.backgroundColor = [
-            "#ffdb72",
-            "#f4a340",
-            "#ff6d86",
-            "#fff1c5",
-            "#e8b4ff"
-        ][Math.floor(Math.random() * 5)];
+        piece.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
 
         piece.style.transform =
             "rotate(" + Math.random() * 360 + "deg)";
@@ -465,50 +489,50 @@ function launchConfetti() {
 }
 
 
-/* =========================================
-   15. DIWALI HIDDEN PHOTO GAME
-========================================= */
+/* ==========================================
+   15. START HIDDEN PHOTO GAME
+========================================== */
 
 function startHiddenPhotoGame(photos) {
 
-    // Reset the game whenever a new person enters.
+    if (!gameCards) return;
 
-    gamePhotos = photos.slice(0, 3);
+    gameCards.innerHTML = "";
 
     discoveredPhotos = new Set();
 
-    gameScore = 0;
+    totalScore = 0;
 
     rocketClicked = false;
 
-    gameCardsContainer.innerHTML = "";
-
-    gameScoreDisplay.textContent = "0 / 100";
-
-    gameProgressDisplay.textContent = "0 / 3";
-
-    gameFeedback.textContent =
-        "Tap a photo to uncover its secret!";
-
-    // Remove old result screen.
-
-    const oldResult = document.getElementById("gameResult");
-
-    if (oldResult) {
-        oldResult.remove();
+    if (gameFeedback) {
+        gameFeedback.textContent =
+            "Tap a photo to uncover its secret!";
     }
 
-    // Three photos are required.
+    const result = document.querySelector(".game-result");
 
-    if (gamePhotos.length < 3) {
+    if (result) {
+        result.remove();
+    }
 
-        gameFeedback.textContent =
-            "This challenge needs three photos. Please add three photos for this person.";
+    updateGameScore();
+
+    if (!Array.isArray(photos) || photos.length < 3) {
+
+        gameCards.innerHTML =
+            "<p>Please add at least three working photos to play the Diwali surprise game.</p>";
+
+        if (gameFeedback) {
+            gameFeedback.textContent =
+                "The surprise game needs three photos.";
+        }
 
         return;
     }
 
-    // Create the three game cards.
+    // The first three photos are used in the game.
+    const gamePhotos = photos.slice(0, 3);
 
     gamePhotos.forEach(function(photo, index) {
 
@@ -517,6 +541,8 @@ function startHiddenPhotoGame(photos) {
         card.type = "button";
 
         card.className = "game-card";
+
+        card.dataset.index = index;
 
         const image = document.createElement("img");
 
@@ -528,13 +554,13 @@ function startHiddenPhotoGame(photos) {
 
         label.className = "game-card-label";
 
-        label.textContent = "MYSTERY PHOTO " + (index + 1);
+        label.textContent = "Tap to reveal ✨";
 
         const status = document.createElement("span");
 
         status.className = "game-card-status";
 
-        status.textContent = "Tap to reveal ✨";
+        status.textContent = "Hidden surprise";
 
         card.appendChild(image);
 
@@ -544,7 +570,7 @@ function startHiddenPhotoGame(photos) {
 
         card.addEventListener("click", function() {
 
-            revealHiddenPhoto(index, card, status);
+            revealGameCard(index, card, label, status);
 
         });
 
@@ -552,73 +578,93 @@ function startHiddenPhotoGame(photos) {
 
             card.disabled = true;
 
-            status.textContent = "Image unavailable";
+            label.textContent = "Photo unavailable";
+
+            status.textContent = "Check image path";
 
         };
 
-        gameCardsContainer.appendChild(card);
+        gameCards.appendChild(card);
 
     });
 
 }
 
 
-/* =========================================
+/* ==========================================
    16. REVEAL HIDDEN PHOTO
-========================================= */
+========================================== */
 
-function revealHiddenPhoto(index, card, status) {
+function revealGameCard(index, card, label, status) {
 
-    // Do not allow repeated scoring.
-
+    // Do not award points twice for the same photo.
     if (discoveredPhotos.has(index)) return;
 
     discoveredPhotos.add(index);
 
-    card.classList.add("discovered");
+    card.classList.add("revealed");
 
     card.disabled = true;
 
-    if (index === 2) {
+    if (index === 0) {
 
-        // The third photo is the rocket.
+        label.textContent = hiddenMessages[0].title;
 
-        rocketClicked = true;
+        status.textContent = "+" + MESSAGE_POINTS + " points";
 
-        // Rocket must be the final discovery for 60 bonus points.
+        totalScore += MESSAGE_POINTS;
 
-        const clickedLast = discoveredPhotos.size === 3;
-
-        if (clickedLast) {
-
-            gameScore += 60;
-
-            status.textContent = "🚀 PERFECT TIMING!";
-
+        if (gameFeedback) {
             gameFeedback.textContent =
-                "You saved the biggest surprise for last! Get ready for the grand Diwali blast!";
-
-        } else {
-
-            status.textContent = "🚀 ROCKET LAUNCHED!";
-
-            gameFeedback.textContent =
-                "BOOM! What a blast! But you opened the rocket before discovering all the hidden messages. The perfect-score bonus is gone!";
-
+                hiddenMessages[0].message;
         }
+
+    }
+
+    else if (index === 1) {
+
+        label.textContent = hiddenMessages[1].title;
+
+        status.textContent = "+" + MESSAGE_POINTS + " points";
+
+        totalScore += MESSAGE_POINTS;
+
+        if (gameFeedback) {
+            gameFeedback.textContent =
+                hiddenMessages[1].message;
+        }
+
+    }
+
+    else if (index === 2) {
+
+        label.textContent = "🚀 THE ROCKET SURPRISE!";
 
         launchRocketFireworks();
 
-    } else {
+        if (discoveredPhotos.size === 3) {
 
-        // First and second photos each give 20 points.
+            totalScore += ROCKET_POINTS;
 
-        gameScore += 20;
+            status.textContent = "+60 points — Perfect order!";
 
-        status.textContent = hiddenMessages[index];
+            if (gameFeedback) {
+                gameFeedback.textContent =
+                    "Amazing! You saved the rocket for last. What a spectacular Diwali blast!";
+            }
 
-        gameFeedback.textContent =
-            "🎁 Surprise discovered! You earned 20 points. Find the remaining surprises!";
+        } else {
+
+            status.textContent = "Rocket launched! No bonus points.";
+
+            if (gameFeedback) {
+                gameFeedback.textContent =
+                    "BOOM! The rocket blasted! But you clicked it before discovering the other surprises. You can still collect the remaining points!";
+            }
+
+        }
+
+        rocketClicked = true;
 
     }
 
@@ -626,33 +672,42 @@ function revealHiddenPhoto(index, card, status) {
 
     if (discoveredPhotos.size === 3) {
 
-        showGameResult();
+        setTimeout(function() {
+
+            showGameResult();
+
+        }, 1800);
 
     }
 
 }
 
 
-/* =========================================
+/* ==========================================
    17. UPDATE GAME SCORE
-========================================= */
+========================================== */
 
 function updateGameScore() {
 
-    gameScoreDisplay.textContent =
-        gameScore + " / 100";
+    if (gameScore) {
+        gameScore.textContent = totalScore + " / 100";
+    }
 
-    gameProgressDisplay.textContent =
-        discoveredPhotos.size + " / 3";
+    if (gameProgress) {
+        gameProgress.textContent =
+            discoveredPhotos.size + " / 3";
+    }
 
 }
 
 
-/* =========================================
-   18. ROCKET LAUNCH ANIMATION
-========================================= */
+/* ==========================================
+   18. ROCKET LAUNCH AND FIREWORKS
+========================================== */
 
 function launchRocketFireworks() {
+
+    if (!gameFireworks) return;
 
     const rocket = document.createElement("div");
 
@@ -661,8 +716,6 @@ function launchRocketFireworks() {
     rocket.textContent = "🚀";
 
     gameFireworks.appendChild(rocket);
-
-    // Rocket reaches the sky and explodes.
 
     setTimeout(function() {
 
@@ -675,25 +728,25 @@ function launchRocketFireworks() {
 }
 
 
-/* =========================================
-   19. FIREWORKS EXPLOSION
-========================================= */
+/* ==========================================
+   19. CREATE FIREWORK BURST
+========================================== */
 
 function createFireworkBurst() {
+
+    if (!gameFireworks) return;
 
     const burst = document.createElement("div");
 
     burst.className = "firework-burst";
 
-    const colours = [
-        "#ffd166",
-        "#ff6b6b",
-        "#fff1a8",
-        "#ff9f43",
-        "#e8b4ff",
+    const colors = [
+        "#ffd700",
+        "#ff4d6d",
         "#ffffff",
-        "#ff69b4",
-        "#7df9ff"
+        "#ff9f1c",
+        "#e0aaff",
+        "#00f5d4"
     ];
 
     for (let i = 0; i < 42; i++) {
@@ -704,24 +757,18 @@ function createFireworkBurst() {
 
         const angle = (Math.PI * 2 * i) / 42;
 
-        const distance = 90 + Math.random() * 120;
+        const distance = 60 + Math.random() * 120;
 
         const x = Math.cos(angle) * distance;
 
         const y = Math.sin(angle) * distance;
 
-        spark.style.setProperty(
-            "--spark-x",
-            x + "px"
-        );
+        spark.style.setProperty("--x", x + "px");
 
-        spark.style.setProperty(
-            "--spark-y",
-            y + "px"
-        );
+        spark.style.setProperty("--y", y + "px");
 
-        spark.style.background =
-            colours[Math.floor(Math.random() * colours.length)];
+        spark.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
 
         burst.appendChild(spark);
 
@@ -733,67 +780,71 @@ function createFireworkBurst() {
 
         burst.remove();
 
-    }, 1600);
+    }, 1800);
 
 }
 
 
-/* =========================================
+/* ==========================================
    20. FINAL GAME RESULT
-========================================= */
+========================================== */
 
 function showGameResult() {
 
+    if (!gameCards) return;
+
+    const oldResult =
+        document.querySelector(".game-result");
+
+    if (oldResult) {
+        oldResult.remove();
+    }
+
     const result = document.createElement("div");
 
-    result.id = "gameResult";
-
-    result.className = "game-result show";
+    result.className = "game-result";
 
     const heading = document.createElement("h2");
 
     const message = document.createElement("p");
 
-    if (gameScore === 100) {
+    const score = document.createElement("strong");
+
+    if (totalScore === 100) {
 
         heading.textContent = "🏆 Diwali Champion!";
 
         message.textContent =
-            "Amazing! You discovered both hidden messages and saved the rocket for last. You earned the perfect score of 100/100!";
+            "Perfect! You discovered both hidden messages and saved the rocket for the grand finale!";
 
     } else {
 
         heading.textContent = "✨ Great Diwali Explorer!";
 
         message.textContent =
-            "You discovered all three surprises and scored " +
-            gameScore +
-            "/100. The fireworks were spectacular!";
+            "You discovered all three surprises! Next time, save the rocket for the very last to earn the perfect score!";
 
     }
+
+    score.textContent = "Your Final Score: " + totalScore + " / 100";
 
     result.appendChild(heading);
 
     result.appendChild(message);
 
-    gameCardsContainer.after(result);
+    result.appendChild(score);
 
-    gameFeedback.textContent =
-        "All three surprises have been discovered. Happy Diwali! 🪔";
-
-    result.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
+    gameCards.parentNode.appendChild(result);
 
 }
 
 
-/* =========================================
-   21. DIWALI MUSIC
-========================================= */
+/* ==========================================
+   21. DIWALI-INSPIRED MUSIC
+========================================== */
 
-// Original browser-generated festive melody.
+// Original browser-generated melody.
+// This is not a recorded or copyrighted song.
 
 function playMelody() {
 
@@ -851,9 +902,9 @@ function playMelody() {
 }
 
 
-/* =========================================
+/* ==========================================
    22. START MUSIC
-========================================= */
+========================================== */
 
 async function startMusic() {
 
@@ -880,8 +931,7 @@ async function startMusic() {
 
         musicPlaying = true;
 
-        musicButton.textContent =
-            "♫ Music: ON — Turn OFF";
+        musicButton.textContent = "♫ Music: ON — Turn OFF";
 
         if (melodyTimer) {
 
@@ -893,21 +943,24 @@ async function startMusic() {
 
         playMelody();
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         musicPlaying = false;
 
-        musicButton.textContent =
-            "♫ Tap to enable music";
+        musicButton.textContent = "♫ Tap to enable music";
+
+        console.error("Music could not start:", error);
 
     }
 
 }
 
 
-/* =========================================
+/* ==========================================
    23. STOP MUSIC
-========================================= */
+========================================== */
 
 function stopMusic() {
 
@@ -927,15 +980,18 @@ function stopMusic() {
 
     }
 
-    musicButton.textContent =
-        "♫ Music: OFF — Turn ON";
+    if (musicButton) {
+
+        musicButton.textContent = "♫ Music: OFF — Turn ON";
+
+    }
 
 }
 
 
-/* =========================================
-   24. MUSIC ON/OFF BUTTON
-========================================= */
+/* ==========================================
+   24. MUSIC ON / OFF BUTTON
+========================================== */
 
 musicButton.addEventListener("click", function() {
 
@@ -952,6 +1008,6 @@ musicButton.addEventListener("click", function() {
 });
 
 
-/* =========================================
+/* ==========================================
    END OF SCRIPT
-========================================= */
+========================================== */
