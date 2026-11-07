@@ -1,5 +1,457 @@
 
 /* =========================================
+   DIWALI WISHES - ROYAL BURGUNDY & GOLD
+========================================= */
+
+:root {
+    --burgundy: #310b20;
+    --deep-burgundy: #1d0716;
+    --wine: #641b3b;
+    --gold: #f4cc78;
+    --light-gold: #ffe8ad;
+    --cream: #fff5df;
+    --text: #f8e8cc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: Georgia, "Times New Roman", serif;
+    color: var(--text);
+    background:
+        radial-gradient(ellipse at 50% 0%, #702342 0%, transparent 45%),
+        linear-gradient(135deg, #1d0716, #310b20 50%, #190611);
+    position: relative;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* =========================================
+   BACKGROUND DECORATIONS
+========================================= */
+
+.background-glow {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(255, 190, 80, 0.09), transparent 25%),
+        radial-gradient(circle at 85% 75%, rgba(255, 110, 70, 0.08), transparent 28%);
+}
+
+.decorations {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.decorations span {
+    position: absolute;
+    opacity: 0.16;
+    font-size: 28px;
+    animation: floatDecoration 12s ease-in-out infinite;
+}
+
+.decorations span:nth-child(1) { top: 8%; left: 7%; }
+.decorations span:nth-child(2) { top: 18%; right: 12%; animation-delay: 2s; }
+.decorations span:nth-child(3) { top: 48%; left: 3%; animation-delay: 4s; }
+.decorations span:nth-child(4) { top: 70%; right: 5%; animation-delay: 1s; }
+.decorations span:nth-child(5) { top: 88%; left: 15%; animation-delay: 3s; }
+.decorations span:nth-child(6) { top: 35%; right: 8%; animation-delay: 5s; }
+.decorations span:nth-child(7) { top: 60%; left: 18%; animation-delay: 2s; }
+.decorations span:nth-child(8) { top: 10%; left: 48%; animation-delay: 6s; }
+
+@keyframes floatDecoration {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-25px) rotate(15deg);
+    }
+}
+
+/* =========================================
+   WELCOME SCREEN
+========================================= */
+
+.welcome-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 18px;
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-card {
+    width: min(570px, 100%);
+    padding: 48px 38px;
+    text-align: center;
+    border: 1px solid rgba(244, 204, 120, 0.65);
+    border-radius: 28px;
+    background:
+        linear-gradient(145deg, rgba(112, 35, 65, 0.9), rgba(35, 7, 26, 0.97));
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.45),
+        0 0 45px rgba(244, 190, 90, 0.12),
+        inset 0 0 30px rgba(255, 220, 150, 0.035);
+    position: relative;
+    overflow: hidden;
+    animation: welcomeAppear 1s ease both;
+}
+
+.welcome-card::before,
+.welcome-card::after {
+    content: "✦";
+    position: absolute;
+    color: var(--gold);
+    font-size: 25px;
+    opacity: 0.65;
+}
+
+.welcome-card::before {
+    top: 18px;
+    left: 20px;
+}
+
+.welcome-card::after {
+    bottom: 18px;
+    right: 20px;
+}
+
+@keyframes welcomeAppear {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.top-diya {
+    font-size: 65px;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 18px rgba(255, 190, 70, 0.65));
+    animation: diyaGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes diyaGlow {
+    0%, 100% {
+        filter: drop-shadow(0 0 10px rgba(255, 190, 70, 0.4));
+        transform: scale(1);
+    }
+    50% {
+        filter: drop-shadow(0 0 25px rgba(255, 190, 70, 0.9));
+        transform: scale(1.07);
+    }
+}
+
+.small-heading {
+    color: var(--gold);
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    margin-bottom: 17px;
+}
+
+.welcome-card h1 {
+    color: var(--light-gold);
+    font-size: clamp(30px, 6vw, 43px);
+    line-height: 1.2;
+    text-shadow: 0 3px 18px rgba(255, 190, 70, 0.2);
+}
+
+.gold-line {
+    width: 95px;
+    height: 2px;
+    margin: 24px auto;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.welcome-text {
+    max-width: 410px;
+    margin: 0 auto 27px;
+    color: #f1d9ba;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+#nameForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#nameInput {
+    width: 100%;
+    padding: 16px 18px;
+    border: 1px solid rgba(244, 204, 120, 0.55);
+    border-radius: 12px;
+    outline: none;
+    color: white;
+    background: rgba(20, 5, 15, 0.55);
+    font-size: 16px;
+    text-align: center;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+#nameInput::placeholder {
+    color: #c8a990;
+}
+
+#nameInput:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 18px rgba(244, 204, 120, 0.2);
+}
+
+.reveal-button {
+    padding: 16px 20px;
+    border: none;
+    border-radius: 12px;
+    color: #38121e;
+    background: linear-gradient(135deg, #ffe7a6, #d99b3d);
+    font-weight: bold;
+    font-size: 15px;
+    box-shadow: 0 7px 22px rgba(215, 155, 61, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.reveal-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(215, 155, 61, 0.4);
+}
+
+.error-message {
+    min-height: 22px;
+    margin-top: 12px;
+    color: #ff9b9b;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+}
+
+.footer-note {
+    margin-top: 18px;
+    color: #c7a78f;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   CELEBRATION SCREEN
+========================================= */
+
+.birthday-screen {
+    width: 100%;
+    min-height: 100vh;
+    padding: 65px 18px 45px;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    animation: celebrationAppear 1s ease both;
+}
+
+@keyframes celebrationAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.celebration-header {
+    width: min(850px, 100%);
+    margin: 0 auto 35px;
+}
+
+.birthday-title {
+    margin: 10px 0 16px;
+    color: var(--light-gold);
+    font-size: clamp(44px, 8vw, 75px);
+    text-shadow:
+        0 0 15px rgba(255, 194, 90, 0.4),
+        0 0 45px rgba(255, 160, 50, 0.18);
+    animation: titleGlow 3s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+    0%, 100% {
+        text-shadow: 0 0 15px rgba(255, 194, 90, 0.3);
+    }
+    50% {
+        text-shadow: 0 0 30px rgba(255, 194, 90, 0.75);
+    }
+}
+
+.person-name {
+    color: #fff1d2;
+    font-size: clamp(24px, 5vw, 35px);
+    margin-bottom: 15px;
+}
+
+.birthday-message {
+    max-width: 650px;
+    margin: 0 auto;
+    color: #e9cdb1;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+/* =========================================
+   PHOTO GALLERY
+========================================= */
+
+.photo-section {
+    width: min(750px, 100%);
+    margin: 0 auto 55px;
+}
+
+.photo-frame {
+    width: min(590px, 100%);
+    min-height: 250px;
+    margin: 0 auto;
+    padding: 12px;
+    border: 2px solid var(--gold);
+    border-radius: 18px;
+    background: linear-gradient(145deg, #f5d58c, #9e642d, #f8dfa3);
+    box-shadow:
+        0 0 25px rgba(255, 192, 90, 0.25),
+        0 18px 45px rgba(0, 0, 0, 0.45);
+    position: relative;
+    overflow: hidden;
+}
+
+.photo-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.2);
+    z-index: 1;
+}
+
+#mainPhoto {
+    display: block;
+    width: 100%;
+    max-height: 440px;
+    min-height: 250px;
+    object-fit: contain;
+    border-radius: 9px;
+    background: #210b18;
+    transition: opacity 0.45s, transform 0.45s;
+}
+
+#mainPhoto.changing {
+    opacity: 0.35;
+    transform: scale(0.98);
+}
+
+.photo-caption {
+    padding: 12px 5px 3px;
+    color: #4b1c21;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+.photo-instruction {
+    margin: 20px 0 15px;
+    color: #e5c69b;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.photo-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    margin: 18px 0;
+}
+
+.photo-controls button {
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(244, 204, 120, 0.7);
+    border-radius: 50%;
+    color: var(--light-gold);
+    background: rgba(255, 255, 255, 0.07);
+    transition: background 0.3s, transform 0.3s;
+}
+
+.photo-controls button:hover {
+    background: rgba(244, 204, 120, 0.2);
+    transform: scale(1.1);
+}
+
+#photoCounter {
+    min-width: 55px;
+    color: var(--gold);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.thumbnail-gallery {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.thumbnail {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border: 2px solid rgba(244, 204, 120, 0.35);
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0.65;
+    transition: opacity 0.3s, transform 0.3s, border 0.3s;
+}
+
+.thumbnail:hover {
+    opacity: 1;
+    transform: translateY(-4px);
+}
+
+.thumbnail.active {
+    opacity: 1;
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(244, 204, 120, 0.4);
+}
+
+/* =========================================
    DIWALI HIDDEN PHOTO GAME
 ========================================= */
 
@@ -176,7 +628,6 @@
         opacity: 0;
         transform: translateY(20px) scale(0.95);
     }
-
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -204,11 +655,9 @@
         opacity: 1;
         transform: translateX(-50%) rotate(-45deg) scale(0.7);
     }
-
     65% {
         opacity: 1;
     }
-
     100% {
         bottom: 85%;
         opacity: 0;
@@ -245,9 +694,132 @@
         transform: translate(0, 0) scale(1.5);
         opacity: 1;
     }
-
     100% {
         transform: translate(var(--spark-x), var(--spark-y)) scale(0.1);
+        opacity: 0;
+    }
+}
+
+/* =========================================
+   FINAL DIWALI WISHES
+========================================= */
+
+.birthday-wish {
+    width: min(650px, 92%);
+    margin: 55px auto 35px;
+    padding: 35px 25px;
+    border-top: 1px solid rgba(244, 204, 120, 0.4);
+    border-bottom: 1px solid rgba(244, 204, 120, 0.4);
+}
+
+.birthday-wish h2 {
+    margin: 12px 0;
+    color: var(--light-gold);
+    font-size: 32px;
+}
+
+.birthday-wish p {
+    color: #e9cdb1;
+    line-height: 1.8;
+}
+
+.wish-decoration {
+    color: var(--gold);
+    font-size: 23px;
+    letter-spacing: 8px;
+    margin: 12px 0;
+}
+
+/* =========================================
+   MUSIC AND BACK BUTTONS
+========================================= */
+
+.music-control {
+    margin: 25px auto;
+}
+
+#musicButton,
+.back-button {
+    padding: 13px 24px;
+    border: 1px solid rgba(244, 204, 120, 0.65);
+    border-radius: 30px;
+    color: var(--light-gold);
+    background: rgba(255, 255, 255, 0.07);
+    font-size: 14px;
+    transition: background 0.3s, transform 0.3s;
+}
+
+#musicButton:hover,
+.back-button:hover {
+    background: rgba(244, 204, 120, 0.18);
+    transform: translateY(-3px);
+}
+
+.back-button {
+    margin: 10px auto 25px;
+}
+
+/* =========================================
+   FALLING PETALS
+========================================= */
+
+#petals {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.petal {
+    position: absolute;
+    top: -40px;
+    opacity: 0.8;
+    animation: fallingPetal linear infinite;
+}
+
+@keyframes fallingPetal {
+    0% {
+        transform: translateY(-30px) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.85;
+    }
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* =========================================
+   CONFETTI
+========================================= */
+
+#confettiContainer {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.confetti {
+    position: absolute;
+    top: -15px;
+    width: 8px;
+    height: 13px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) rotate(720deg);
         opacity: 0;
     }
 }
@@ -257,6 +829,22 @@
 ========================================= */
 
 @media (max-width: 650px) {
+    .welcome-card {
+        padding: 38px 22px;
+    }
+
+    .birthday-screen {
+        padding: 45px 12px 30px;
+    }
+
+    .photo-frame {
+        padding: 8px;
+    }
+
+    #mainPhoto {
+        min-height: 190px;
+        max-height: 330px;
+    }
 
     .hidden-game-section {
         padding: 25px 12px;
@@ -293,6 +881,11 @@
     .score-box strong {
         font-size: 21px;
     }
+
+    .thumbnail {
+        width: 62px;
+        height: 62px;
+    }
 }
 
 @media (max-width: 380px) {
@@ -303,14 +896,33 @@
     .game-card-label {
         font-size: 10px;
     }
+
+    .game-card-status {
+        font-size: 9px;
+    }
+
+    .welcome-card {
+        padding: 32px 16px;
+    }
+}
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--light-gold);
+    outline-offset: 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .game-card,
-    .game-result,
-    .rocket-flight,
-    .firework-spark {
-        animation: none !important;
-        transition: none !important;
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }
