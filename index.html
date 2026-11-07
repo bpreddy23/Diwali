@@ -1,174 +1,133 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Diwali Birthday Celebration ✨</title>
-
+    <title>Diwali Birthday Celebration</title>
     <link rel="stylesheet" href="style.css">
-
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
     <div class="background-glow"></div>
 
-    <header>
-        <div class="logo">
-            ✦ दीपोत्सव
-            <small>Birthday Celebration</small>
-        </div>
+    <!-- Floating Diwali decorations -->
+    <div class="decorations" aria-hidden="true">
+        <span>🪔</span>
+        <span>✨</span>
+        <span>🪔</span>
+        <span>🌸</span>
+        <span>✨</span>
+        <span>🪔</span>
+        <span>🌼</span>
+        <span>✨</span>
+    </div>
 
-        <button id="musicButton">
-            ♫ Play Festive Music
-        </button>
-    </header>
+    <!-- Falling petals -->
+    <div id="petals" aria-hidden="true"></div>
 
-    <main>
+    <!-- Welcome screen -->
+    <main class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-card">
+            <div class="top-diya">🪔</div>
 
-        <!-- INITIAL NAME ENTRY SCREEN -->
+            <p class="small-heading">A LITTLE SURPRISE FOR YOU</p>
 
-        <section id="welcomeScreen">
+            <h1>Celebrate Your Special Day</h1>
 
-            <p class="eyebrow">
-                ✧ A LITTLE LIGHT, A LOT OF LOVE ✧
-            </p>
+            <div class="gold-line"></div>
 
-            <h1>
-                Some birthdays deserve
-                <br>
-                <em>a little Diwali magic.</em>
-            </h1>
-
-            <p class="description">
-                A celebration of you, wrapped in golden lights,
-                warm wishes and a beautiful surprise.
+            <p class="welcome-text">
+                A beautiful surprise is waiting for you.
+                Enter your name to discover it!
             </p>
 
             <form id="nameForm">
-
-                <label for="nameInput">
-                    First, tell us your name
-                </label>
-
-                <div class="input-container">
-
-                    <input
-                        type="text"
-                        id="nameInput"
-                        placeholder="Enter your name..."
-                        autocomplete="given-name"
-                        required
-                    >
-
-                    <button type="submit">
-                        Reveal →
-                    </button>
-
-                </div>
-
-                <p id="errorMessage"></p>
-
-                <small>
-                    A little surprise is waiting just for you.
-                </small>
-
+                <input
+                    type="text"
+                    id="nameInput"
+                    placeholder="Enter your name..."
+                    autocomplete="off"
+                    required
+                >
+                <button type="submit" class="reveal-button">
+                    Reveal My Surprise ✨
+                </button>
             </form>
 
-            <div class="diyas">
-                🪔 &nbsp;&nbsp;&nbsp; 🪔 &nbsp;&nbsp;&nbsp; 🪔
+            <p id="errorMessage" class="error-message"></p>
+
+            <p class="footer-note">
+                Made with ❤️ and festive magic
+            </p>
+        </div>
+    </main>
+
+    <!-- Birthday celebration screen -->
+    <main class="birthday-screen hidden" id="birthdayScreen">
+
+        <div class="celebration-header">
+            <p class="small-heading">LIGHTS • LOVE • HAPPINESS</p>
+
+            <h1 class="birthday-title">
+                Happy Birthday!
+            </h1>
+
+            <h2 id="personName" class="person-name"></h2>
+
+            <p class="birthday-message">
+                May your life shine brighter than a thousand diyas.
+                Wishing you endless happiness, love and success!
+            </p>
+        </div>
+
+        <!-- Main photo -->
+        <section class="photo-section">
+            <div class="photo-frame" id="photoFrame">
+                <div class="photo-glow"></div>
+                <img id="mainPhoto" src="" alt="Birthday person's photo">
+                <div class="photo-caption">A SPECIAL MOMENT ❤️</div>
             </div>
 
-        </section>
-
-
-        <!-- BIRTHDAY CELEBRATION SCREEN -->
-
-        <section id="birthdayScreen" class="hidden">
-
-            <button id="backButton" class="back-button">
-                ← Choose another name
-            </button>
-
-            <p class="eyebrow">
-                TONIGHT, THE LIGHTS SHINE FOR YOU
+            <p class="photo-instruction">
+                A collection of beautiful memories
             </p>
 
-            <!-- PHOTO REVEAL -->
-
-            <div class="photo-container">
-
-                <div class="photo-frame" id="photoFrame">
-
-                    <img
-                        id="personImage"
-                        src=""
-                        alt="Birthday celebrant"
-                    >
-
-                    <div id="photoFallback">
-                        <span id="initials">✧</span>
-                        <small>YOUR SPECIAL MOMENT</small>
-                    </div>
-
-                </div>
-
-                <span class="star star1">✦</span>
-                <span class="star star2">✧</span>
-                <span class="star star3">✦</span>
-                <span class="star star4">✧</span>
-
+            <!-- Photo controls -->
+            <div class="photo-controls">
+                <button id="previousPhoto" aria-label="Previous photo">❮</button>
+                <span id="photoCounter">1 / 3</span>
+                <button id="nextPhoto" aria-label="Next photo">❯</button>
             </div>
 
-            <!-- PERSONALIZED WISH -->
-
-            <div class="birthday-message">
-
-                <p class="birthday-label">
-                    HAPPY BIRTHDAY
-                </p>
-
-                <h2 id="personName">
-                    Dear Friend
-                </h2>
-
-                <div class="divider">
-                    ✧
-                </div>
-
-                <p class="wish">
-                    May your life sparkle with a thousand
-                    reasons to smile, and may every new
-                    beginning shine brighter than the last.
-                </p>
-
-                <p class="blessing">
-                    Wishing you love, laughter, prosperity
-                    and endless light.
-                </p>
-
-                <p class="signature">
-                    With warm wishes ♥
-                </p>
-
-            </div>
-
-            <button id="againButton" class="again-button">
-                Make another wish ✨
-            </button>
-
+            <!-- Thumbnails -->
+            <div class="thumbnail-gallery" id="thumbnailGallery"></div>
         </section>
+
+        <div class="birthday-wish">
+            <div class="wish-decoration">✦ ✧ ✦</div>
+
+            <h2>Keep Shining!</h2>
+
+            <p>
+                May every dream find its wings and every moment
+                bring a reason to smile.
+            </p>
+
+            <div class="wish-decoration">🪔 ✨ 🪔</div>
+        </div>
+
+        <div class="music-control">
+            <button id="musicButton">♫ Play Celebration Music</button>
+        </div>
+
+        <button id="backButton" class="back-button">
+            ← Back to Welcome
+        </button>
 
     </main>
 
-
-    <footer>
-        ✧ Made with light, love and a little celebration ✧
-    </footer>
-
-    <div id="confetti"></div>
+    <div id="confettiContainer" aria-hidden="true"></div>
 
     <script src="people.js"></script>
     <script src="script.js"></script>
